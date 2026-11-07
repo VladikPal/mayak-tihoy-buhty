@@ -1,0 +1,1701 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a1226">
+<title>Маяк Тихой Бухты</title><script>
+(function(){function show(m){try{var d=document.getElementById("__err");if(!d){d=document.createElement("pre");d.id="__err";d.style.cssText="position:fixed;z-index:99999;left:0;right:0;top:0;max-height:60%;overflow:auto;margin:0;padding:8px;background:#300;color:#fff;font:11px/1.3 monospace;white-space:pre-wrap";(document.body||document.documentElement).appendChild(d);}d.textContent+=m+String.fromCharCode(10);}catch(e){}}
+window.onerror=function(m,u,l,c){show("JS: "+m+" @"+l+":"+c);};
+window.addEventListener("unhandledrejection",function(e){show("Promise: "+(e.reason&&e.reason.message||e.reason));});
+window.__show=show;})();
+</script>
+<style>
+:root{--bg:#0a1226;--card:#16213f;--card2:#1f2d54;--txt:#eef2ff;--dim:#93a0c8;--gold:#ffd36b;--acc:#4aa8ff;--ok:#4ade80;--bad:#ff6b8a;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,system-ui,"Segoe UI",Roboto,Arial,sans-serif;overflow:hidden;touch-action:manipulation;overscroll-behavior:none}
+#app{position:fixed;top:0;left:0;right:0;bottom:0;height:100vh;height:100dvh;overflow:hidden}
+.scr{position:absolute;top:0;left:0;right:0;bottom:0;display:none;flex-direction:column;padding:calc(var(--sat) + 8px) 12px calc(var(--sab) + 10px)}
+.scr.on{display:flex}
+h1,h2,h3{margin:0}
+button{font-family:inherit;color:inherit}
+.btn{border:0;border-radius:14px;background:var(--acc);color:#04132b;font-weight:800;font-size:16px;padding:13px 16px;margin:5px 0;display:block;width:100%}
+.btn.sec{background:var(--card2);color:var(--txt)}
+.btn.gold{background:linear-gradient(#ffe08a,#f2a93a);color:#3a2300}
+.btn.red{background:#b3324f;color:#fff}
+.btn.sm{display:inline-block;width:auto;padding:9px 14px;font-size:14px;margin:4px 4px 4px 0}
+.btn:active{transform:scale(.97)}
+.btn[disabled]{opacity:.45}
+.top{display:flex;align-items:center;flex:none;margin-bottom:6px}
+.top .back{border:0;background:var(--card2);border-radius:12px;font-size:20px;width:42px;height:38px;margin-right:10px;flex:none}
+.top .ttl{flex:1;min-width:0}
+.top .ttl b{font-size:17px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .ttl small{color:var(--dim);font-size:12px}
+.pill{background:var(--card2);border-radius:99px;padding:4px 10px;font-size:13px;margin-left:6px;white-space:nowrap}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+/* home */
+#home{align-items:center;text-align:center;justify-content:center;background:radial-gradient(ellipse at 50% 20%,#1b2d5c,#0a1226 70%)}
+#home .logo{width:150px;height:190px;margin:0 auto 4px}
+#home h1{font-size:30px;color:var(--gold);text-shadow:0 0 18px #ffb83a66}
+#home .sub{color:var(--dim);font-size:14px;margin:4px 0 14px}
+#home .menu{width:100%;max-width:340px}
+#home .stats{margin-top:10px;color:var(--dim);font-size:13px}
+.dotb{position:relative}
+.dotb.dot::after{content:"";position:absolute;top:8px;right:12px;width:10px;height:10px;border-radius:50%;background:var(--bad)}
+/* map */
+.tabs{display:flex;flex:none;margin-bottom:8px}
+.tabs button{flex:1;border:0;background:var(--card);padding:9px 4px;font-size:13px;font-weight:700;color:var(--dim);margin-right:5px;border-radius:10px}
+.tabs button:last-child{margin-right:0}
+.tabs button.on{background:var(--card2);color:var(--gold)}
+.chead{background:var(--card);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+.chead small{color:var(--dim);display:block;margin-top:2px}
+.gname{font-size:13px;color:var(--dim);margin:10px 2px 6px;font-weight:700}
+.nodes{display:grid;grid-template-columns:repeat(6,1fr);grid-gap:7px}
+.node{border:0;border-radius:12px;background:var(--card2);padding:7px 0 4px;text-align:center;font-weight:800;font-size:16px;min-height:50px}
+.node small{display:block;font-size:10px;color:var(--gold);letter-spacing:-1px;height:12px}
+.node.lock{opacity:.35}
+.node.cur{box-shadow:0 0 0 2px var(--gold);background:#2a3c6e}
+.node.done{background:#244b5c}
+/* game */
+#game{padding-left:8px;padding-right:8px}
+#hud{display:flex;align-items:center;justify-content:space-between;flex:none;margin:2px 4px 4px;font-size:14px}
+#hud .st{color:var(--gold);font-size:18px;letter-spacing:1px}
+#hud .mv{color:var(--dim)}
+#hud b{color:var(--txt)}
+#cwrap{flex:1;position:relative;min-height:120px;border-radius:14px;overflow:hidden}
+#cv{position:absolute;top:0;left:0;width:100%;height:100%;touch-action:none;display:block}
+#tipb{position:absolute;left:8px;right:8px;top:8px;background:#000b;border:1px solid #ffd36b66;border-radius:12px;padding:9px 12px;font-size:14px;line-height:1.35;z-index:3;display:none}
+#ctl{display:flex;flex:none;margin-top:8px}
+#ctl button{flex:1;border:0;border-radius:14px;background:var(--card2);padding:11px 0 9px;font-size:12px;color:var(--dim);margin-right:6px;display:flex;flex-direction:column;align-items:center}
+#ctl button:last-child{margin-right:0}
+#ctl button span{font-size:22px;line-height:1.1}
+#ctl button:active{background:var(--acc);color:#04132b}
+#ctl button[disabled]{opacity:.4}
+/* overlays */
+.ov{position:absolute;top:0;left:0;right:0;bottom:0;z-index:50;display:none;background:#000a;align-items:flex-end;justify-content:center;padding:0 12px calc(var(--sab) + 14px)}
+.ov.on{display:flex}
+.ov.mid{align-items:center}
+.box{width:100%;max-width:420px;background:var(--card);border:1px solid #2c3d70;border-radius:20px;padding:16px;max-height:86%;overflow-y:auto}
+.box h2{font-size:22px;color:var(--gold);text-align:center;margin-bottom:6px}
+.box p{color:var(--dim);margin:6px 0;font-size:14px;line-height:1.4}
+#story{background:#000c}
+#story .box{display:block;position:relative;padding:14px 16px 12px}
+#sav{font-size:40px;margin-right:12px;float:left;line-height:1}
+#swho{font-weight:800;color:var(--gold);font-size:15px}
+#stxt{font-size:16px;line-height:1.45;margin-top:4px;min-height:96px;clear:none}
+#snext{float:right;color:var(--dim);font-size:12px;margin-top:6px}
+#sskip{border:0;background:none;color:var(--dim);font-size:12px;padding:8px 0}
+.stars{font-size:44px;text-align:center;color:var(--gold);letter-spacing:6px;margin:6px 0}
+.stars i{font-style:normal;display:inline-block;animation:pop .5s both}
+.stars i:nth-child(2){animation-delay:.18s}.stars i:nth-child(3){animation-delay:.36s}
+.stars i.off{color:#34406a}
+@keyframes pop{from{transform:scale(0) rotate(-90deg)}to{transform:scale(1) rotate(0)}}
+#toast{position:absolute;left:50%;top:calc(var(--sat) + 10px);transform:translateX(-50%);background:#101b38;border:1px solid var(--gold);border-radius:14px;padding:9px 14px;z-index:99;display:none;max-width:90%;text-align:center;font-size:14px}
+/* collection */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);grid-gap:8px}
+.art{background:var(--card);border-radius:14px;text-align:center;padding:10px 2px;font-size:11px;color:var(--dim);min-height:82px;border:0}
+.art b{display:block;font-size:30px;line-height:1.2}
+.art.no{opacity:.4}
+.row{display:flex;align-items:center;background:var(--card);border-radius:14px;padding:10px;margin-bottom:7px;width:100%;border:0;text-align:left}
+.row .ic{font-size:28px;width:44px;text-align:center;flex:none}
+.row .mid{flex:1;min-width:0}
+.row .mid b{font-size:15px;display:block}
+.row .mid small{color:var(--dim);font-size:12px}
+.row.no{opacity:.45}
+.set{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:14px;padding:12px;margin-bottom:7px}
+.sw{width:52px;height:30px;border-radius:99px;background:#33406a;position:relative;border:0;flex:none}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .15s}
+.sw.on{background:var(--ok)}.sw.on::after{left:25px}
+textarea{width:100%;height:90px;background:#0c1530;color:var(--txt);border:1px solid #2c3d70;border-radius:10px;font:11px monospace;padding:8px;-webkit-user-select:text;user-select:text}
+#savebar{position:absolute;left:8px;right:8px;top:calc(var(--sat) + 4px);z-index:98;background:#7a1f33;border:1px solid #ff6b8a;border-radius:12px;padding:8px 10px;font-size:12px;line-height:1.35}
+#savebar button{border:0;border-radius:8px;background:#fff;color:#7a1f33;font-weight:700;padding:4px 10px;margin-top:4px}
+.dot2{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--ok);margin-left:6px;vertical-align:middle;transition:opacity .3s}
+.dot2.blink{animation:blk .5s}
+@keyframes blk{0%{transform:scale(2.2);background:#fff}100%{transform:scale(1)}}
+
+</style>
+</head>
+<body>
+<div id="app">
+ <div id="home" class="scr on">
+  <svg class="logo" viewBox="0 0 150 190" xmlns="http://www.w3.org/2000/svg">
+   <defs><linearGradient id="bm" x1="0" x2="1"><stop offset="0" stop-color="#ffe9a8" stop-opacity=".0"/><stop offset=".3" stop-color="#ffe9a8" stop-opacity=".55"/><stop offset="1" stop-color="#ffe9a8" stop-opacity="0"/></linearGradient></defs>
+   <polygon points="75,52 150,20 150,74" fill="url(#bm)"/><polygon points="75,52 0,22 0,72" fill="url(#bm)"/>
+   <circle cx="20" cy="20" r="1.6" fill="#fff"/><circle cx="120" cy="12" r="1.4" fill="#fff"/><circle cx="45" cy="8" r="1.2" fill="#fff"/><circle cx="105" cy="40" r="1.3" fill="#fff"/>
+   <polygon points="58,170 92,170 86,70 64,70" fill="#f4f1ea"/><polygon points="62,150 88,150 87,132 63,132" fill="#c8434f"/><polygon points="65,112 85,112 84,94 66,94" fill="#c8434f"/>
+   <rect x="58" y="56" width="34" height="16" rx="3" fill="#2b3a6d"/><rect x="64" y="58" width="22" height="12" fill="#ffd36b"/><polygon points="56,56 75,40 94,56" fill="#c8434f"/>
+   <rect x="20" y="168" width="110" height="8" rx="4" fill="#1a2750"/><path d="M0 184 Q38 172 75 184 T150 184 V190 H0Z" fill="#12306a"/>
+  </svg>
+  <h1>Маяк Тихой Бухты</h1>
+  <div class="sub">Головоломка с историей</div>
+  <div class="menu">
+   <button class="btn gold" id="bCont">▶ Продолжить</button>
+   <button class="btn sec" id="bMap">🗺 Карта глав</button>
+   <button class="btn sec dotb" id="bDaily">📅 Ежедневная головоломка</button>
+   <button class="btn sec" id="bFriends">👥 Друзья и дуэли</button>
+   <button class="btn sec" id="bColl">📖 Коллекция и достижения</button>
+   <button class="btn sec" id="bSet">⚙ Настройки</button>
+  </div>
+  <div class="stats" id="hstats"></div>
+  <div class="stats" id="homeSave" style="margin-top:4px;font-size:12px"></div>
+ </div>
+
+ <div id="map" class="scr">
+  <div class="top"><button class="back" data-go="home">←</button><div class="ttl"><b>Карта</b><small id="mapsub"></small></div><span class="pill" id="mapst"></span></div>
+  <div class="tabs" id="chtabs"></div>
+  <div class="scroll" id="maplist"></div>
+ </div>
+
+ <div id="game" class="scr">
+  <div class="top"><button class="back" id="gBack">←</button><div class="ttl"><b id="gTitle"></b><small id="gSub"></small></div><span class="pill" id="gHints">💡 0</span></div>
+  <div id="hud"><span class="st" id="gStars">★★★</span><span class="mv">Ходы: <b id="gMoves">0</b> · ★★★ до <b id="gT3">0</b></span></div>
+  <div id="cwrap"><canvas id="cv"></canvas><div id="tipb"></div></div>
+  <div id="ctl">
+   <button id="bUndo"><span>↶</span>Отмена</button>
+   <button id="bReset"><span>⟲</span>Заново</button>
+   <button id="bHint"><span>💡</span>Подсказка</button>
+  </div>
+ </div>
+
+ <div id="coll" class="scr">
+  <div class="top"><button class="back" data-go="home">←</button><div class="ttl"><b>Коллекция</b><small id="collsub"></small></div></div>
+  <div class="tabs" id="ctabs"><button data-t="art" class="on">Артефакты</button><button data-t="diary">Дневник</button><button data-t="ach">Достижения</button></div>
+  <div class="scroll" id="collbody"></div>
+ </div>
+
+ <div id="friends" class="scr">
+  <div class="top"><button class="back" data-go="home">←</button><div class="ttl"><b>Друзья</b><small id="frsub"></small></div></div>
+  <div class="scroll" id="frbody"></div>
+ </div>
+
+ <div id="sets" class="scr">
+  <div class="top"><button class="back" data-go="home">←</button><div class="ttl"><b>Настройки</b></div></div>
+  <div class="scroll">
+   <div class="set"><div>🔊 Звук<br><small style="color:var(--dim)">По умолчанию выключен</small></div><button class="sw" id="swSound"></button></div>
+   <div class="set"><div>📳 Вибрация<br><small style="color:var(--dim)">Работает не на всех телефонах</small></div><button class="sw" id="swVib"></button></div>
+   <h3 style="margin:14px 2px 6px">Сохранение <span id="saveInd" class="dot2"></span></h3>
+   <p id="saveInfo" style="color:var(--ok);font-size:13px;margin:0 2px 8px">…</p>
+   <p style="color:var(--dim);font-size:13px;margin:0 2px 6px">Игра сохраняется сама после каждого хода: в браузере и в резервной копии. Раз в неделю делай экспорт и держи код в заметках.</p>
+   <button class="btn sec" id="bCopyNow">📋 Скопировать сейв</button>
+   <button class="btn sec" id="bExp">📤 Показать код сохранения</button>
+   <textarea id="taOut" readonly style="display:none"></textarea>
+   <button class="btn sec sm" id="bCopy" style="display:none">Копировать</button>
+   <button class="btn sec" id="bImp">📥 Загрузить из кода</button>
+   <textarea id="taIn" placeholder="Вставь код MAYAK2:..." style="display:none"></textarea>
+   <button class="btn gold sm" id="bImpGo" style="display:none">Проверить и загрузить</button>
+   <button class="btn sec" id="bCloudUp">☁ Сохранить в облако (сервер друзей)</button>
+   <button class="btn sec" id="bCloudDown">☁ Загрузить из облака</button>
+   <button class="btn red" id="bWipe" style="margin-top:16px">Сбросить весь прогресс</button>
+   <p style="text-align:center;color:var(--dim);font-size:12px">Маяк Тихой Бухты · v1.0</p>
+  </div>
+ </div>
+
+ <div id="story" class="ov"><div class="box"><div id="sav">👧</div><div id="swho"></div><div id="stxt"></div><div id="snext">нажми, чтобы продолжить ▸</div><button id="sskip">Пропустить</button></div></div>
+ <div id="win" class="ov"><div class="box"><h2 id="wTitle">Уровень пройден!</h2><div class="stars" id="wStars"></div><p id="wInfo" style="text-align:center"></p><p id="wExtra" style="text-align:center;color:var(--gold)"></p>
+  <button class="btn gold" id="wNext">Дальше ▸</button><button class="btn sec" id="wAgain">Сыграть ещё раз</button><button class="btn sec" id="wMap">К карте</button></div></div>
+ <div id="modal" class="ov mid"><div class="box"><h2 id="mTitle"></h2><div style="font-size:60px;text-align:center" id="mIcon"></div><p id="mText" style="text-align:center"></p><button class="btn sec" id="mOk">Закрыть</button></div></div>
+ <div id="savebar" style="display:none"><span id="savebarTxt"></span> <button id="savebarBtn">Экспорт</button></div>
+ <div id="toast"></div>
+</div>
+<script id="s-engine">
+/* ===== ДВИЖОК «Маяк»: чистая логика, без DOM ===== */
+var Eng=(function(){
+var DX=[0,1,0,-1],DY=[-1,0,1,0]; // 0 вверх, 1 вправо, 2 вниз, 3 влево
+var NAMES=['вверх','вправо','вниз','влево'];
+function parse(rows){
+  var h=rows.length,w=0,y,x,i;
+  for(y=0;y<h;y++){if(rows[y].length>w)w=rows[y].length;}
+  var t=[],crates=[],start=-1,targets=[],mi={},mn=0,plates=[],tp={},ch;
+  for(y=0;y<h;y++)for(x=0;x<w;x++){
+    i=y*w+x;ch=rows[y].charAt(x)||'#';
+    if(ch===' ')ch='#';
+    var tc=ch;
+    if(ch==='@'){start=i;tc='.';}
+    else if(ch==='+'){start=i;tc='T';}
+    else if(ch==='$'){crates.push(i);tc='.';}
+    else if(ch==='*'){crates.push(i);tc='T';}
+    t.push(tc);
+    if(tc==='T')targets.push(i);
+    if(tc==='k'||tc==='D'||tc==='x'){mi[i]=mn++;}
+    if(tc==='p')plates.push(i);
+    if(tc==='a'||tc==='b'){(tp[tc]=tp[tc]||[]).push(i);}
+  }
+  var pair={};
+  for(var k in tp){if(tp[k].length===2){pair[tp[k][0]]=tp[k][1];pair[tp[k][1]]=tp[k][0];}}
+  crates.sort(function(a,b){return a-b;});
+  return {w:w,h:h,t:t,start:start,crates:crates,targets:targets,mi:mi,mn:mn,plates:plates,pair:pair,rows:rows};
+}
+function init(L){var m=[],i;for(i=0;i<L.mn;i++)m.push(0);return {p:L.start,c:L.crates.slice(),keys:0,m:m};}
+function key(s){return s.p+'|'+s.c.join(',')+'|'+s.keys+'|'+s.m.join('');}
+function gateOpen(L,s){
+  for(var i=0;i<L.plates.length;i++){var q=L.plates[i];if(s.p===q||s.c.indexOf(q)>=0)return true;}
+  return false;
+}
+// эффективный тип клетки для игрока
+function eff(L,s,i){
+  var c=L.t[i];
+  if(c==='k'||c==='D')return s.m[L.mi[i]]?'.':c;
+  if(c==='x')return s.m[L.mi[i]]?'#':'x';
+  if(c==='g')return gateOpen(L,s)?'g':'#';
+  return c;
+}
+function crateOk(L,s,i){
+  var c=L.t[i];
+  if(c==='.'||c==='T'||c==='_'||c==='p')return true;
+  if((c==='k'||c==='D')&&s.m[L.mi[i]])return true;
+  return false;
+}
+function sortNum(a,b){return a-b;}
+// ход: возвращает {s:новое состояние, ev:{...}} или null
+function move(L,s,d){
+  var w=L.w,h=L.h,px=s.p%w,py=(s.p/w)|0,nx=px+DX[d],ny=py+DY[d];
+  if(nx<0||ny<0||nx>=w||ny>=h)return null;
+  var ni=ny*w+nx,m=s.m.slice(),keys=s.keys,c=s.c.slice(),ev={},pos=ni;
+  var ns={p:s.p,c:c,keys:keys,m:m};
+  if(L.t[s.p]==='x'&&!m[L.mi[s.p]]){m[L.mi[s.p]]=1;ev.crack=true;}
+  var ci=c.indexOf(ni);
+  if(ci>=0){
+    var n2x=nx+DX[d],n2y=ny+DY[d];
+    if(n2x<0||n2y<0||n2x>=w||n2y>=h)return null;
+    var n2=n2y*w+n2x;
+    if(c.indexOf(n2)>=0||!crateOk(L,s,n2))return null;
+    c[ci]=n2;c.sort(sortNum);ev.push=true;
+  }else{
+    var e=eff(L,s,ni);
+    if(e==='#')return null;
+    if(e==='D'){if(keys<1)return null;keys--;m[L.mi[ni]]=1;ev.door=true;}
+    else if(e==='k'){keys++;m[L.mi[ni]]=1;ev.key=true;}
+    else if(e==='a'||e==='b'){
+      var dst=L.pair[ni];
+      if(dst===undefined||c.indexOf(dst)>=0)return null;
+      pos=dst;ev.tele=true;
+    }
+  }
+  if(!ev.tele){
+    // скольжение по льду
+    var cx=pos%w,cy=(pos/w)|0;
+    while(L.t[pos]==='_'){
+      var sx=cx+DX[d],sy=cy+DY[d];
+      if(sx<0||sy<0||sx>=w||sy>=h)break;
+      var si=sy*w+sx,tt=L.t[si];
+      if(!(tt==='.'||tt==='T'||tt==='_'||tt==='p'))break;
+      if(c.indexOf(si)>=0)break;
+      pos=si;cx=sx;cy=sy;ev.slide=true;
+    }
+  }
+  ns.p=pos;ns.keys=keys;
+  if(L.t[pos]==='g'&&!gateOpen(L,ns))return null;
+  return {s:ns,ev:ev};
+}
+function isWin(L,s){
+  for(var i=0;i<L.targets.length;i++)if(s.c.indexOf(L.targets[i])<0)return false;
+  return L.targets.length>0;
+}
+// BFS: минимальное число ходов. cap — лимит состояний
+function solve(L,s0,cap){
+  cap=cap||400000;s0=s0||init(L);
+  if(isWin(L,s0))return {ok:true,moves:0,path:[],visited:1};
+  var seen={},st=[s0],par=[-1],mv=[-1],head=0;seen[key(s0)]=1;
+  while(head<st.length){
+    var cur=st[head];
+    for(var d=0;d<4;d++){
+      var r=move(L,cur,d);if(!r)continue;
+      var k=key(r.s);if(seen[k])continue;seen[k]=1;
+      st.push(r.s);par.push(head);mv.push(d);
+      if(isWin(L,r.s)){
+        var path=[],j=st.length-1;
+        while(par[j]>=0){path.push(mv[j]);j=par[j];}
+        path.reverse();
+        return {ok:true,moves:path.length,path:path,visited:st.length};
+      }
+      if(st.length>=cap)return {ok:false,capped:true,visited:st.length};
+    }
+    head++;
+  }
+  return {ok:false,capped:false,visited:st.length};
+}
+function stars(par,moves){
+  if(moves<=par+Math.ceil(par*0.25)+1)return 3;
+  if(moves<=par*2+4)return 2;
+  return 1;
+}
+// ---- ГСЧ ----
+function hashStr(str){var h=2166136261>>>0;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h>>>0;}
+function rng(seed){var a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
+function ri(r,n){return Math.floor(r()*n);}
+function shuffle(r,a){for(var i=a.length-1;i>0;i--){var j=ri(r,i+1),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+// ---- ГЕНЕРАТОР ----
+// o:{w,h,n,dens,feat,pulls,ice,crack,minPar,maxPar,cap}
+function neutral(rows){
+  return rows.map(function(r){return r.replace(/[_kDpgxab]/g,'.');});
+}
+function genOnce(r,o){
+  var w=o.w,h=o.h,x,y,g=[];
+  for(y=0;y<h;y++){g.push([]);for(x=0;x<w;x++)g[y].push((x===0||y===0||x===w-1||y===h-1)?'#':'.');}
+  var nW=Math.round((w-2)*(h-2)*(o.dens||0.1)),i;
+  for(i=0;i<nW;i++){g[1+ri(r,h-2)][1+ri(r,w-2)]='#';}
+  var feat=o.feat||'none',gap=null,divV=ri(r,2)===0,divPos=0;
+  var needDiv=(feat==='door'||feat==='gate'||feat==='tele'||feat==='mix');
+  var useFeat=feat;
+  if(feat==='mix'){var ms=o.set||['door','gate','tele'];useFeat=ms[ri(r,ms.length)];}
+  var gapCell=null;
+  if(needDiv){
+    if(divV){divPos=2+ri(r,w-4);for(y=1;y<h-1;y++)g[y][divPos]='#';gap=1+ri(r,h-2);gapCell=[divPos,gap];}
+    else{divPos=2+ri(r,h-4);for(x=1;x<w-1;x++)g[divPos][x]='#';gap=1+ri(r,w-2);gapCell=[gap,divPos];}
+    if(useFeat!=='tele')g[gapCell[1]][gapCell[0]]='.';
+  }
+  function cells(f){var a=[];for(var yy=1;yy<h-1;yy++)for(var xx=1;xx<w-1;xx++)if(f(xx,yy))a.push([xx,yy]);return a;}
+  function sideOf(xx,yy){return divV?(xx<divPos?0:1):(yy<divPos?0:1);}
+  var fl=cells(function(xx,yy){return g[yy][xx]==='.';});
+  if(fl.length<o.n*3+4)return null;
+  shuffle(r,fl);
+  var crates=[],targets=[];
+  var cside=needDiv?ri(r,2):0;
+  var pool=needDiv?fl.filter(function(c){return sideOf(c[0],c[1])===cside&&!(gapCell&&c[0]===gapCell[0]&&c[1]===gapCell[1]);}):fl;
+  if(pool.length<o.n*2+2)return null;
+  for(i=0;i<o.n;i++){var c0=pool[i];targets.push(c0);crates.push([c0[0],c0[1]]);}
+  var pl=pool[o.n+1];
+  var px=pl[0],py=pl[1];
+  function crateAt(xx,yy){for(var j=0;j<crates.length;j++)if(crates[j][0]===xx&&crates[j][1]===yy)return j;return -1;}
+  var P=o.pulls||40;
+  for(i=0;i<P*3;i++){
+    var d=ri(r,4),nx=px+DX[d],ny=py+DY[d];
+    if(g[ny][nx]==='#'||crateAt(nx,ny)>=0)continue;
+    var bx=px-DX[d],by=py-DY[d],bj=crateAt(bx,by);
+    if(bj>=0&&r()<0.7){crates[bj]=[px,py];}
+    px=nx;py=ny;
+  }
+  function busy(xx,yy){if(crateAt(xx,yy)>=0)return true;for(var j=0;j<targets.length;j++)if(targets[j][0]===xx&&targets[j][1]===yy)return true;return false;}
+  if(needDiv){
+    var oth=cells(function(xx,yy){return g[yy][xx]==='.'&&sideOf(xx,yy)!==cside&&!(gapCell&&xx===gapCell[0]&&yy===gapCell[1]);});
+    if(oth.length<4)return null;
+    var pp=oth[ri(r,oth.length)];px=pp[0];py=pp[1];
+  }
+  var pf=cells(function(xx,yy){return g[yy][xx]==='.'&&!busy(xx,yy)&&!(xx===px&&yy===py)&&!(gapCell&&xx===gapCell[0]&&yy===gapCell[1]);});
+  shuffle(r,pf);
+  if(needDiv){
+    var mySide=sideOf(px,py);
+    var mine=pf.filter(function(c){return sideOf(c[0],c[1])===mySide;});
+    var theirs=pf.filter(function(c){return sideOf(c[0],c[1])!==mySide;});
+    if(useFeat==='door'){g[gapCell[1]][gapCell[0]]='D';if(!mine.length)return null;var kc=mine[0];g[kc[1]][kc[0]]='k';}
+    else if(useFeat==='gate'){g[gapCell[1]][gapCell[0]]='g';if(mine.length<2)return null;var pc=mine[0];g[pc[1]][pc[0]]='p';crates.push([mine[1][0],mine[1][1]]);}
+    else if(useFeat==='tele'){
+      if(!mine.length||!theirs.length)return null;
+      g[mine[0][1]][mine[0][0]]='a';g[theirs[0][1]][theirs[0][0]]='a';
+    }
+  }
+  var usedSet={};
+  for(y=0;y<h;y++)for(x=0;x<w;x++)if(g[y][x]!=='.'&&g[y][x]!=='#')usedSet[x+','+y]=1;
+  var free=pf.filter(function(c){return !usedSet[c[0]+','+c[1]];});
+  var ni=o.ice||0;
+  for(i=0;i<ni&&i<free.length;i++){
+    var c1=free[i];g[c1[1]][c1[0]]='_';
+    var dd=ri(r,4),len=ri(r,3);
+    for(var q=1;q<=len;q++){var ex=c1[0]+DX[dd]*q,ey=c1[1]+DY[dd]*q;if(g[ey]&&g[ey][ex]==='.'&&!busy(ex,ey)&&!(ex===px&&ey===py)&&!(gapCell&&ex===gapCell[0]&&ey===gapCell[1]))g[ey][ex]='_';}
+  }
+  var cr=o.crack||0,added=0;
+  for(i=ni;i<free.length&&added<cr;i++){var c2=free[i];if(g[c2[1]][c2[0]]==='.'){g[c2[1]][c2[0]]='x';added++;}}
+  var rows=[];
+  for(y=0;y<h;y++){
+    var line='';
+    for(x=0;x<w;x++){
+      var ch=g[y][x];
+      var isC=crateAt(x,y)>=0,isT=false;
+      for(var j=0;j<targets.length;j++)if(targets[j][0]===x&&targets[j][1]===y)isT=true;
+      if(x===px&&y===py){ch=isT?'+':'@';}
+      else if(isC){ch=isT?'*':'$';}
+      else if(isT)ch='T';
+      line+=ch;
+    }
+    rows.push(line);
+  }
+  return rows;
+}
+// фича «нужна»: без неё (нейтральный вариант) число ходов другое
+function genLevel(r,o,maxTries){
+  maxTries=maxTries||200;
+  for(var a=0;a<maxTries;a++){
+    var rows=genOnce(r,o);if(!rows)continue;
+    var hasF=/[_kDpgxab]/.test(rows.join(''));
+    if((o.feat&&o.feat!=='none')&&!hasF)continue;
+    var L=parse(rows);
+    if(L.start<0||L.targets.length!==o.n||L.crates.length<o.n)continue;
+    var already=true;for(var q=0;q<L.targets.length;q++)if(L.crates.indexOf(L.targets[q])<0)already=false;
+    if(already)continue;
+    var res=solve(L,null,o.cap||120000);
+    if(!res.ok)continue;
+    if(res.moves<(o.minPar||8)||res.moves>(o.maxPar||60))continue;if(o.minVisited&&res.visited<o.minVisited)continue;
+    if(hasF){
+      var nl=parse(neutral(rows)),nr=solve(nl,null,o.cap||120000);
+      if(nr.ok&&nr.moves===res.moves)continue;
+    }
+    return {rows:rows,par:res.moves,visited:res.visited,tries:a+1};
+  }
+  return null;
+}
+// ---- ежедневная головоломка ----
+function dateKey(d){d=d||new Date();var m=d.getMonth()+1,dd=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd;}
+function dailySpec(dk){
+  var wd=(new Date(dk+'T12:00:00')).getDay();
+  var feats=['mix','ice','door','gate','tele','crack','mix'];
+  var f=feats[wd],diff=(wd===0||wd===6)?1:0;
+  var o={w:7+diff,h:7+diff,n:2+diff,dens:0.1,feat:f,pulls:45,minPar:12+diff*4,maxPar:70,cap:80000};
+  if(f==='ice')o.ice=3;
+  if(f==='crack')o.crack=3;
+  if(f==='mix')o.ice=2;
+  return o;
+}
+function genDaily(dk,fallbackLevels){
+  var r=rng(hashStr('mayak'+dk)),o=dailySpec(dk),res=genLevel(r,o,40);
+  if(!res){o.feat='ice';o.ice=3;o.crack=0;res=genLevel(r,o,60);}
+  if(res)return {rows:res.rows,par:res.par,gen:true};
+  var fb=fallbackLevels[hashStr(dk)%fallbackLevels.length];
+  return {rows:fb.rows,par:fb.par,gen:false};
+}
+// ---- СОХРАНЕНИЕ ----
+var Save={
+  KEY:'mayak_v1',
+  fresh:function(){return {v:2,meta:{lastExport:0,lastRemind:0,a2hs:0,lastCloud:0,cloudScore:0},run:null,done:{},hints:3,ach:{},art:{},scenes:{},daily:{},streak:0,lastDaily:'',set:{sound:false,vib:true},stats:{moves:0,undos:0,restarts:0,hintsUsed:0,levels:0},cur:0};},
+  validate:function(o){
+    var f=Save.fresh();
+    if(!o||typeof o!=='object')return null;
+    var k;
+    for(k in f){if(o[k]===undefined)o[k]=f[k];}
+    if(typeof o.hints!=='number'||!(o.hints>=0)||o.hints>99)o.hints=3;
+    if(typeof o.cur!=='number'||!(o.cur>=0))o.cur=0;
+    if(typeof o.streak!=='number'||!(o.streak>=0))o.streak=0;
+    if(!o.done||typeof o.done!=='object')o.done={};
+    for(k in o.done){var d=o.done[k];if(!d||typeof d.stars!=='number'||typeof d.moves!=='number'||d.stars!==d.stars||d.moves!==d.moves)delete o.done[k];}
+    if(!o.stats||typeof o.stats!=='object')o.stats=f.stats;
+    for(k in f.stats){if(typeof o.stats[k]!=='number'||o.stats[k]!==o.stats[k])o.stats[k]=0;}
+    if(!o.set||typeof o.set!=='object')o.set=f.set;
+    if(!o.ach||typeof o.ach!=='object')o.ach={};
+    if(!o.art||typeof o.art!=='object')o.art={};
+    if(!o.scenes||typeof o.scenes!=='object')o.scenes={};
+    if(!o.daily||typeof o.daily!=='object')o.daily={};
+    if(!o.meta||typeof o.meta!=='object')o.meta=f.meta;
+    if(o.run&&!(typeof o.run.id==='string'&&typeof o.run.path==='string'&&/^[0-3]{0,500}$/.test(o.run.path)))o.run=null;
+    return o;
+  },
+  encode:function(o){var j=JSON.stringify(o),b;try{b=btoa(unescape(encodeURIComponent(j)));}catch(e){b=Buffer.from(j,'utf8').toString('base64');}return 'MAYAK1:'+b;},
+  decode:function(s){
+    s=String(s||'').replace(/\s+/g,'');
+    if(s.indexOf('MAYAK1:')!==0)return null;
+    var b=s.slice(7),j;
+    try{j=decodeURIComponent(escape(atob(b)));}catch(e){try{j=Buffer.from(b,'base64').toString('utf8');}catch(e2){return null;}}
+    try{return Save.validate(JSON.parse(j));}catch(e3){return null;}
+  }
+};
+return {DX:DX,DY:DY,NAMES:NAMES,parse:parse,init:init,key:key,move:move,isWin:isWin,solve:solve,stars:stars,rng:rng,hashStr:hashStr,genLevel:genLevel,genDaily:genDaily,dateKey:dateKey,dailySpec:dailySpec,neutral:neutral,Save:Save,gateOpen:gateOpen};
+})();
+if(typeof module!=='undefined')module.exports=Eng;
+
+</script>
+<script id="s-levels">
+/* АВТОГЕНЕРАЦИЯ tests/gen.js */
+var LEVELS=[{"ch":1,"n":1,"mech":"push","group":"Причал","gen":false,"par":2,"rows":["#######","#.....#","#.@$.T#","#.....#","#######"],"tip":"Свайпни по полю или жми стрелки — Мира идёт. Толкай ящик на золотой постамент."},
+{"ch":1,"n":2,"mech":"push","group":"Причал","gen":false,"par":6,"rows":["######","#T...#","#....#","#.$..#","#..@.#","######"],"tip":"Ящики только толкают, тянуть нельзя. Ошиблась? Кнопка «Отмена» вернёт ход."},
+{"ch":1,"n":3,"mech":"push","group":"Причал","gen":false,"par":14,"rows":["#######","#T...T#","#.....#","#.$.$.#","#..@..#","#######"]},
+{"ch":1,"n":4,"mech":"push","group":"Причал","gen":false,"par":18,"rows":["########","#..#...#","#T.#.$.#","#..#...#","#......#","#..@...#","########"]},
+{"ch":1,"n":5,"mech":"push","group":"Причал","gen":false,"par":21,"rows":["#########","#T.T.T..#","#.......#","#.$.$.$.#","#...@...#","#########"]},
+{"ch":1,"n":6,"mech":"push","group":"Причал","gen":false,"par":17,"rows":["#######","#T#...#","#.#.$.#","#...$.#","#.@.T.#","#######"]},
+{"ch":1,"n":7,"mech":"door","group":"Ключница","gen":false,"par":6,"rows":["#########","#@.k#...#","#...D.$T#","#########"],"tip":"Ключ открывает одну дверь и исчезает. Подбери ключ — и иди в дверь."},
+{"ch":1,"n":8,"mech":"door","group":"Ключница","gen":false,"par":8,"rows":["#########","#.@.#...#","#.k.#.T.#","#...D.$.#","#...#...#","#########"]},
+{"ch":1,"n":9,"mech":"door","group":"Ключница","gen":false,"par":22,"rows":["###########","#@.k#.k#..#","#...D.$.DT#","#...#...#.#","###########"]},
+{"ch":1,"n":10,"mech":"door","group":"Ключница","gen":true,"par":15,"rows":["#######","#k...@#","##D####","#T....#","##.$.##","#....##","#######"]},
+{"ch":1,"n":11,"mech":"door","group":"Ключница","gen":true,"par":17,"rows":["#######","#k.@.##","####D##","##...T#","#..$.$#","#T....#","#######"]},
+{"ch":1,"n":12,"mech":"door","group":"Ключница","gen":true,"par":21,"rows":["#######","#.#.T.#","#T.$.##","####D##","#.$..##","#.k.@.#","#######"]},
+{"ch":1,"n":13,"mech":"ice","group":"Ледяная бухта","gen":false,"par":3,"rows":["#########","#@___$.T#","#########"],"tip":"Лёд скользкий: Мира едет, пока не упрётся. Ящик по льду не едет — только на одну клетку."},
+{"ch":1,"n":14,"mech":"ice","group":"Ледяная бухта","gen":false,"par":9,"rows":["#########","#@_____.#","#.......#","#..$....#","#.....T.#","#########"]},
+{"ch":1,"n":15,"mech":"ice","group":"Ледяная бухта","gen":false,"par":10,"rows":["#########","#.......#","#.$_._$.#","#.T...T.#","#...@...#","#########"]},
+{"ch":1,"n":16,"mech":"ice","group":"Ледяная бухта","gen":true,"par":17,"rows":["#######","#_....#","#.#...#","##.*__#","#...#.#","#+..$.#","#######"]},
+{"ch":1,"n":17,"mech":"ice","group":"Ледяная бухта","gen":true,"par":21,"rows":["#######","#T.$..#","#..#..#","##_$T.#","#.@___#","#..._##","#######"]},
+{"ch":1,"n":18,"mech":"ice","group":"Ледяная бухта","gen":true,"par":22,"rows":["#######","#T#@._#","#.T.._#","#$_.#.#","#._.$.#","#._._##","#######"]},
+{"ch":1,"n":19,"mech":"gate","group":"Нажимная скала","gen":false,"par":9,"rows":["###########","#..p#######","#@.$..g$.T#","#.....#####","###########"],"tip":"Если на плите стоит ящик, ворота открыты. Без ящика на плите — закрыты."},
+{"ch":1,"n":20,"mech":"gate","group":"Нажимная скала","gen":false,"par":11,"rows":["#############","#..p####....#","#@.$....g$.T#","#......######","#############"]},
+{"ch":1,"n":21,"mech":"gate","group":"Нажимная скала","gen":false,"par":9,"rows":["###########","#T..p.....#","#.#.#.###.#","#@$.$..g.$#","#.....#####","###########"]},
+{"ch":1,"n":22,"mech":"gate","group":"Нажимная скала","gen":true,"par":20,"rows":["#######","#.TTg.#","#.$.#.#","#...#@#","##$.#$#","#...#p#","#######"]},
+{"ch":1,"n":23,"mech":"gate","group":"Нажимная скала","gen":true,"par":24,"rows":["#######","##p.$@#","####g##","#.#..T#","#.$..$#","#.T...#","#######"]},
+{"ch":1,"n":24,"mech":"gate","group":"Нажимная скала","gen":true,"par":15,"rows":["#######","##T.$.#","#T..$.#","#####g#","#.p.$@#","##.#..#","#######"]},
+{"ch":1,"n":25,"mech":"mix","group":"Затонувший склад","gen":true,"par":21,"rows":["#######","#T$...#","#.#.$.#","#T.___#","#g#####","#@$..p#","#######"]},
+{"ch":1,"n":26,"mech":"mix","group":"Затонувший склад","gen":true,"par":26,"rows":["#######","#...###","#_$T#k#","#_..D_#","#.$.#@#","##.T#.#","#######"]},
+{"ch":1,"n":27,"mech":"mix","group":"Затонувший склад","gen":true,"par":26,"rows":["#######","#..#._#","#..#T##","#.k#$T#","#.$D..#","#.@#._#","#######"]},
+{"ch":1,"n":28,"mech":"mix","group":"Затонувший склад","gen":true,"par":39,"rows":["########","#......#","##T#.$.#","#...T$_#","##..#._#","##D#####","#k_..@.#","########"]},
+{"ch":1,"n":29,"mech":"mix","group":"Затонувший склад","gen":true,"par":30,"rows":["########","#T.T#.##","#.__#..#","#$.*g.$#","#.$.#.@#","#.._#..#","#.###.p#","########"]},
+{"ch":1,"n":30,"mech":"mix","group":"Затонувший склад","gen":true,"par":43,"rows":["########","#*..#.@#","##.*D..#","#.._#..#","##.T#..#","#.$.#.##","#...#_k#","########"]},
+{"ch":1,"n":31,"mech":"mix","group":"Затонувший склад","gen":true,"par":35,"rows":["########","#...#k.#","#.*.#..#","#.#.##.#","#T$.#@.#","#_$TD..#","###_#..#","########"]},
+{"ch":1,"n":32,"mech":"mix","group":"Затонувший склад","gen":false,"par":21,"rows":["###########","#@..#...p.#","#.k.D..$..#","#...#.$_T.#","#.#.#.#.#.#","#...g.T...#","###########"]},
+{"ch":2,"n":1,"mech":"tele","group":"Шепчущая опушка","gen":false,"par":4,"rows":["###########","#@.a#.a$.T#","###########"],"tip":"Парные порталы-раковины: шагни на одну — окажешься у второй."},
+{"ch":2,"n":2,"mech":"tele","group":"Шепчущая опушка","gen":false,"par":8,"rows":["#########","#@.a#...#","#...#.$.#","#.#.#.T.#","#...#.a.#","#########"]},
+{"ch":2,"n":3,"mech":"tele","group":"Шепчущая опушка","gen":false,"par":10,"rows":["###########","#@.a#.$.T.#","#...#.#...#","#.b.#.a.$.#","#...#.b.T.#","###########"]},
+{"ch":2,"n":4,"mech":"tele","group":"Шепчущая опушка","gen":true,"par":13,"rows":["#######","##.a@.#","#######","#...a.#","#.$...#","##..#T#","#######"]},
+{"ch":2,"n":5,"mech":"tele","group":"Шепчущая опушка","gen":true,"par":12,"rows":["#######","#...aT#","#..$..#","#.....#","#######","#@...a#","#######"]},
+{"ch":2,"n":6,"mech":"tele","group":"Шепчущая опушка","gen":true,"par":17,"rows":["#######","#...#.#","#.$$#@#","#...#a#","#Ta.#.#","#.#T#.#","#######"]},
+{"ch":2,"n":7,"mech":"tele","group":"Шепчущая опушка","gen":true,"par":26,"rows":["########","#a....@#","########","#...a..#","#.$....#","#.#..#T#","#..T.$.#","########"]},
+{"ch":2,"n":8,"mech":"tele","group":"Шепчущая опушка","gen":true,"par":33,"rows":["########","#..#...#","#....$##","#.Ta...#","#..T$..#","########","#....a@#","########"]},
+{"ch":2,"n":9,"mech":"crack","group":"Гнилой мост","gen":false,"par":5,"rows":["#########","#@xxx$.T#","#########"],"tip":"Хрупкие плиты трескаются: шагнёшь на неё, сойдёшь — и плиты нет. Дважды не пройти."},
+{"ch":2,"n":10,"mech":"crack","group":"Гнилой мост","gen":false,"par":13,"rows":["#########","#@xx....#","#######.#","#T...$..#","#########"]},
+{"ch":2,"n":11,"mech":"crack","group":"Гнилой мост","gen":false,"par":18,"rows":["###########","#@x..x....#","#.#..#.#..#","#..$.$.$..#","#T.......T#","###########"]},
+{"ch":2,"n":12,"mech":"crack","group":"Гнилой мост","gen":true,"par":27,"rows":["#######","#T...x#","#$..@.#","#..#$.#","##.#x.#","#T.x..#","#######"]},
+{"ch":2,"n":13,"mech":"crack","group":"Гнилой мост","gen":true,"par":28,"rows":["#######","##....#","#.T..x#","#.x*.##","##.$.@#","#...x.#","#######"]},
+{"ch":2,"n":14,"mech":"crack","group":"Гнилой мост","gen":true,"par":41,"rows":["#######","#xT...#","#@x#..#","#.....#","##$.*.#","#..x.x#","#######"]},
+{"ch":2,"n":15,"mech":"crack","group":"Гнилой мост","gen":true,"par":33,"rows":["#######","#x.@.T#","##...##","#.$x.##","#.....#","#x..*x#","#######"]},
+{"ch":2,"n":16,"mech":"crack","group":"Гнилой мост","gen":true,"par":28,"rows":["#######","#.xx..#","#.#...#","#.x@..#","#.$$xT#","#.T..##","#######"]},
+{"ch":2,"n":17,"mech":"mix","group":"Сердце тумана","gen":true,"par":22,"rows":["#######","#a##x_#","#x#T._#","#@#T$_#","#.#.$_#","#.#..a#","#######"]},
+{"ch":2,"n":18,"mech":"mix","group":"Сердце тумана","gen":true,"par":21,"rows":["#######","#.....#","#.x$$x#","#.T_T_#","#####D#","#..@k.#","#######"]},
+{"ch":2,"n":19,"mech":"mix","group":"Сердце тумана","gen":true,"par":22,"rows":["#######","#.T..x#","#._$T.#","##D####","#.$@.k#","#x_...#","#######"]},
+{"ch":2,"n":20,"mech":"mix","group":"Сердце тумана","gen":true,"par":24,"rows":["#######","#_x_#k#","#.T_#.#","#.$T#.#","#.$.#.#","#.x.D@#","#######"]},
+{"ch":2,"n":21,"mech":"mix","group":"Сердце тумана","gen":true,"par":23,"rows":["#######","#.#___#","#xx.$.#","#.TT$_#","#D#####","#.@.k.#","#######"]},
+{"ch":2,"n":22,"mech":"mix","group":"Сердце тумана","gen":true,"par":27,"rows":["########","#.#@a._#","########","#...xTa#","#._.T..#","#.$$...#","#._.x#.#","########"]},
+{"ch":2,"n":23,"mech":"mix","group":"Сердце тумана","gen":true,"par":28,"rows":["########","#.x###.#","#.$.#..#","#...#@.#","#_$TDx.#","#_.T#.k#","#_..#..#","########"]},
+{"ch":2,"n":24,"mech":"mix","group":"Сердце тумана","gen":true,"par":45,"rows":["########","###.x..#","#.#$#._#","#@#T#$_#","#.g$__.#","#$#T.T.#","#p#...x#","########"]},
+{"ch":2,"n":25,"mech":"mix","group":"Сердце тумана","gen":true,"par":32,"rows":["########","##T._#.#","#.x..#k#","###$##.#","#T_..#.#","#x$.$#@#","#._.TD.#","########"]},
+{"ch":2,"n":26,"mech":"mix","group":"Сердце тумана","gen":true,"par":33,"rows":["########","###x.a.#","#a#.#..#","#.#$._x#","#.#T$_##","#.#*._T#","#@#.._.#","########"]},
+{"ch":2,"n":27,"mech":"mix","group":"Сердце тумана","gen":true,"par":34,"rows":["########","#..x@a.#","########","#..T.$T#","#T_$x$.#","#...#__#","##.#..a#","########"]},
+{"ch":2,"n":28,"mech":"mix","group":"Сердце тумана","gen":true,"par":44,"rows":["########","##x.k.@#","###D####","#....*.#","##T#.__#","#.$$...#","#.._xT.#","########"]},
+{"ch":2,"n":29,"mech":"mix","group":"Сердце тумана","gen":true,"par":42,"rows":["########","#.#k.@.#","#####D##","#.$TT.##","#x..#_.#","#.$$._x#","#T_.#_.#","########"]},
+{"ch":2,"n":30,"mech":"mix","group":"Сердце тумана","gen":true,"par":37,"rows":["########","#@.k...#","#####D##","#.Tx...#","#__.$$.#","##TT.$.#","#.#_#x.#","########"]},
+{"ch":2,"n":31,"mech":"mix","group":"Сердце тумана","gen":true,"par":29,"rows":["########","#.#....#","#.#_.#T#","#@DxT._#","#.##.$$#","#.#.*._#","#k#x...#","########"]},
+{"ch":2,"n":32,"mech":"mix","group":"Сердце тумана","gen":false,"par":21,"rows":["###########","#@.k#...T.#","#.$.D.$.#.#","#...#..$x.#","#.a.#.a.#.#","#T..#T..#.#","###########"]}];
+
+</script>
+<script id="s-storage">
+/* ===== Надёжное автосохранение: слоты localStorage + резерв IndexedDB, контрольная сумма, ротация, гонки вкладок ===== */
+var Store=(function(){
+var SCHEMA=2;
+function sum(s){var h=2166136261>>>0,i;for(i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h.toString(16)+'-'+s.length.toString(36);}
+function b64enc(str){try{return btoa(unescape(encodeURIComponent(str)));}catch(e){return Buffer.from(str,'utf8').toString('base64');}}
+function b64dec(b){try{return decodeURIComponent(escape(atob(b)));}catch(e){try{return Buffer.from(b,'base64').toString('utf8');}catch(e2){return null;}}}
+// конверт: {sv,ts,rev,sum,data:<строка JSON>}
+function wrap(data,rev,ts){var body=JSON.stringify(data);return JSON.stringify({sv:SCHEMA,ts:ts,rev:rev,sum:sum(body),data:body});}
+function migrate(d){
+  var f={lastExport:0,lastRemind:0,a2hs:0,lastCloud:0,cloudScore:0};
+  if(!d.meta||typeof d.meta!=='object')d.meta={};
+  for(var k in f)if(typeof d.meta[k]!=='number'||d.meta[k]!==d.meta[k])d.meta[k]=f[k];
+  if(d.run===undefined)d.run=null;
+  d.v=SCHEMA;
+  return d;
+}
+// разбор конверта или старого обычного JSON (v1). validate — Eng.Save.validate
+function parse(str,validate){
+  if(typeof str!=='string'||!str)return {ok:false,why:'empty'};
+  var o;try{o=JSON.parse(str);}catch(e){return {ok:false,why:'json'};}
+  if(!o||typeof o!=='object')return {ok:false,why:'json'};
+  var data,rev=0,ts=0,legacy=false;
+  if(o.sv===undefined){ // старый формат v1 без конверта
+    if(o.done===undefined)return {ok:false,why:'format'};
+    data=o;legacy=true;
+  }else{
+    if(typeof o.sv!=='number'||o.sv>SCHEMA)return {ok:false,why:'newer'};
+    if(typeof o.data!=='string'||sum(o.data)!==o.sum)return {ok:false,why:'sum'};
+    try{data=JSON.parse(o.data);}catch(e2){return {ok:false,why:'json'};}
+    rev=typeof o.rev==='number'&&o.rev>=0?o.rev:0;ts=typeof o.ts==='number'?o.ts:0;
+  }
+  data=validate(data);if(!data)return {ok:false,why:'invalid'};
+  return {ok:true,data:migrate(data),rev:rev,ts:ts,legacy:legacy};
+}
+function score(d){var n=0,s=0,k;for(k in d.done){n++;s+=d.done[k].stars;}return {levels:n,stars:s,score:n*10000+s};}
+function exportCode(data,rev,ts){return 'MAYAK2:'+b64enc(wrap(data,rev,ts));}
+function parseCode(code,validate){
+  code=String(code==null?'':code).replace(/\s+/g,'');
+  if(code.length>200000)return {ok:false,error:'слишком длинный текст'};
+  if(code.indexOf('MAYAK2:')===0){
+    var j=b64dec(code.slice(7));if(!j)return {ok:false,error:'код повреждён'};
+    var p=parse(j,validate);
+    if(!p.ok)return {ok:false,error:p.why==='sum'?'контрольная сумма не совпала: код повреждён или изменён':p.why==='newer'?'сейв от более новой версии игры':'код повреждён'};
+    return {ok:true,data:p.data,rev:p.rev,ts:p.ts,legacy:false};
+  }
+  if(code.indexOf('MAYAK1:')===0){
+    var j1=b64dec(code.slice(7));if(!j1)return {ok:false,error:'код повреждён'};
+    var p1=parse(j1,validate);
+    if(!p1.ok)return {ok:false,error:'код повреждён'};
+    return {ok:true,data:p1.data,rev:0,ts:0,legacy:true};
+  }
+  return {ok:false,error:'это не код сохранения «Маяка»'};
+}
+function mergeSaves(a,b){
+  var r=JSON.parse(JSON.stringify(a)),k,i;
+  for(k in b.done){var x=b.done[k],y=r.done[k];if(!y||x.stars>y.stars||(x.stars===y.stars&&x.moves<y.moves))r.done[k]={stars:x.stars,moves:x.moves};}
+  var un=['art','scenes','ach'];
+  for(i=0;i<un.length;i++)for(k in b[un[i]])if(!r[un[i]][k])r[un[i]][k]=b[un[i]][k];
+  for(k in b.daily){var dx=b.daily[k],dy=r.daily[k];if(!dy||dx.stars>dy.stars||(dx.stars===dy.stars&&dx.moves<dy.moves))r.daily[k]={stars:dx.stars,moves:dx.moves};}
+  for(k in b.stats)if(typeof b.stats[k]==='number'&&b.stats[k]>(r.stats[k]||0))r.stats[k]=b.stats[k];
+  if(b.streak>r.streak)r.streak=b.streak;
+  if(String(b.lastDaily)>String(r.lastDaily))r.lastDaily=b.lastDaily;
+  if(b.hints>r.hints)r.hints=b.hints;
+  if(b.meta)for(k in b.meta)if(typeof b.meta[k]==='number'&&b.meta[k]>(r.meta[k]||0))r.meta[k]=b.meta[k];
+  return r;
+}
+function isQuota(e){return !!e&&(e.name==='QuotaExceededError'||e.name==='NS_ERROR_DOM_QUOTA_REACHED'||e.code===22||e.code===1014);}
+
+function create(env){
+  var K={main:'mayak_v2_main',prev:'mayak_v2_prev',tmp:'mayak_v2_tmp',b:['mayak_v2_b0','mayak_v2_b1','mayak_v2_b2'],legacy:'mayak_v1',corrupt:'mayak_v2_corrupt'};
+  var now=env.now||function(){return Date.now();};
+  var backupEvery=env.backupEvery===undefined?120000:env.backupEvery;
+  var st={rev:0,ts:0,lsOk:true,idbOk:!!env.idb,lastSaved:0,saves:0,err:'',restored:'',writes:0};
+  var timer=null,getData=null,dirty=false,lastBackup=0,ivl=null,self={};
+  function note(m,kind){if(env.onNotice)env.onNotice(m,kind||'info');}
+  function state(extra){if(env.onState){var c={},k;for(k in st)c[k]=st[k];if(extra)for(k in extra)c[k]=extra[k];env.onState(c);}}
+  function lsGet(k){try{return env.ls?env.ls.getItem(k):null;}catch(e){return null;}}
+  function lsSet(k,v){try{env.ls.setItem(k,v);return true;}catch(e){return isQuota(e)?'quota':false;}}
+  function lsDel(k){try{env.ls.removeItem(k);}catch(e){}}
+  function P(s){return parse(s,env.validate);}
+  function probe(){
+    if(!env.ls){st.lsOk=false;return;}
+    var t='mayak_probe',r=lsSet(t,'1');
+    if(r===true){lsDel(t);st.lsOk=true;}else st.lsOk=false;
+  }
+  // ---- загрузка ----
+  self.bootSync=function(){
+    probe();
+    var names=[['main',K.main],['tmp',K.tmp],['prev',K.prev],['b0',K.b[0]],['b1',K.b[1]],['b2',K.b[2]],['v1',K.legacy]];
+    var best=null,mainStr=lsGet(K.main),mainBad=false,i;
+    for(i=0;i<names.length;i++){
+      var s=lsGet(names[i][1]);if(!s)continue;
+      var p=P(s);
+      if(!p.ok){if(names[i][0]==='main')mainBad=true;continue;}
+      p.name=names[i][0];
+      if(!best||p.rev>best.rev||(p.rev===best.rev&&p.ts>best.ts)||(p.rev===best.rev&&p.ts===best.ts&&p.name==='main'))best=p;
+    }
+    if(best){
+      st.rev=best.rev;st.ts=best.ts;
+      if(best.name==='v1'){note('Сохранение обновлено до новой версии формата','info');dirty=true;}
+      else if(best.name!=='main'){
+        st.restored=best.name;
+        if(mainStr&&mainBad)lsSet(K.corrupt,mainStr);
+        note(mainBad?'Основное сохранение было повреждено. Прогресс восстановлен из резервной копии ('+best.name+').':'Восстановлено незавершённое сохранение ('+best.name+').','warn');
+        dirty=true;
+      }
+      return best.data;
+    }
+    if(mainStr&&mainBad){lsSet(K.corrupt,mainStr);note('Сохранение повреждено и в резерве копий нет. Проверь IndexedDB или импортируй код.','err');}
+    return null;
+  };
+  self.bootAsync=function(cb){
+    if(!env.idb){if(cb)cb();return;}
+    var got=0,cands=[];
+    function done(){
+      got++;if(got<2)return;
+      var best=null,i;
+      for(i=0;i<cands.length;i++)if(cands[i].ok&&(!best||cands[i].rev>best.rev))best=cands[i];
+      if(best&&(best.rev>st.rev||(st.rev===0&&!getData))){
+        if(best.rev>st.rev){
+          st.rev=best.rev;st.ts=best.ts;st.restored='idb';
+          note('Прогресс восстановлен из резервной копии в IndexedDB.','warn');
+          if(env.onReplace)env.onReplace(best.data);
+          dirty=true;self.request();
+        }
+      }
+      if(cb)cb();
+    }
+    ['main','prev'].forEach(function(k){
+      var fin=false;
+      try{env.idb.get(k,function(v){if(fin)return;fin=true;cands.push(v?P(v):{ok:false});done();});}
+      catch(e){if(!fin){fin=true;cands.push({ok:false});done();}}
+    });
+  };
+  // ---- запись ----
+  function writeLS(str,oldMain){
+    var r=lsSet(K.tmp,str);
+    if(r==='quota'){ // освобождаем место: резервные копии и prev
+      var i;for(i=0;i<K.b.length;i++)lsDel(K.b[i]);lsDel(K.prev);lsDel(K.corrupt);
+      r=lsSet(K.tmp,str);
+    }
+    if(r!==true){st.lsOk=false;st.err=r==='quota'?'Нет места в хранилище браузера':'Хранилище недоступно';return false;}
+    if(lsGet(K.tmp)!==str){st.lsOk=false;st.err='Запись не подтвердилась';return false;}
+    if(oldMain&&P(oldMain).ok){
+      lsSet(K.prev,oldMain);
+      if(now()-lastBackup>=backupEvery){
+        var b1=lsGet(K.b[1]),b0=lsGet(K.b[0]);
+        if(b1)lsSet(K.b[2],b1);if(b0)lsSet(K.b[1],b0);
+        lsSet(K.b[0],oldMain);lastBackup=now();
+      }
+    }
+    var m=lsSet(K.main,str);
+    if(m!==true){st.lsOk=false;st.err=m==='quota'?'Нет места в хранилище браузера':'Не удалось записать';return false;}
+    lsDel(K.tmp);st.lsOk=true;st.err='';
+    return true;
+  }
+  self.flushNow=function(why){
+    if(timer){clearTimeout(timer);timer=null;}
+    if(!getData)return false;
+    if(!dirty&&why!=='force')return true;
+    var d=getData();if(!d)return false;
+    state({writing:true});
+    // гонка вкладок: если в хранилище ревизия новее нашей — объединяем, а не затираем
+    var curStr=lsGet(K.main),cur=curStr?P(curStr):null;
+    if(cur&&cur.ok&&cur.rev>st.rev){
+      d=mergeSaves(d,cur.data);st.rev=cur.rev;
+      if(env.onReplace)env.onReplace(d);
+      note('Прогресс из другой вкладки объединён с текущим.','info');
+    }
+    st.rev++;st.ts=now();
+    var str=wrap(d,st.rev,st.ts);
+    var ok=env.ls?writeLS(str,curStr):false;
+    if(env.idb){
+      try{env.idb.put('prev',lsGet(K.prev)||curStr||str,function(){});env.idb.put('main',str,function(r){st.idbOk=r!==false;});}catch(e){st.idbOk=false;}
+    }
+    dirty=false;st.writes++;
+    if(ok||st.idbOk){st.lastSaved=now();}
+    if(env.broadcast){try{env.broadcast(st.rev);}catch(e){}}
+    state({writing:false});
+    return ok;
+  };
+  self.request=function(){
+    dirty=true;
+    if(timer)clearTimeout(timer);
+    timer=setTimeout(function(){timer=null;self.flushNow('debounce');},env.debounce===undefined?300:env.debounce);
+  };
+  self.bind=function(fn){getData=fn;if(dirty)self.request();};
+  self.onStorage=function(key,newValue){
+    if(key!==K.main||!newValue||!getData)return;
+    var p=P(newValue);
+    if(!p.ok||p.rev<=st.rev)return;
+    var merged=mergeSaves(getData(),p.data);
+    st.rev=p.rev;
+    if(env.onReplace)env.onReplace(merged);
+    note('Прогресс обновлён из другой вкладки.','info');
+    dirty=true;self.request();
+  };
+  self.onRemote=function(rev){if(rev>st.rev)self.onStorage(K.main,lsGet(K.main));};
+  self.wipe=function(){
+    var i,all=[K.main,K.prev,K.tmp,K.corrupt,K.legacy].concat(K.b);
+    for(i=0;i<all.length;i++)lsDel(all[i]);
+    if(env.idb){try{env.idb.put('main','',function(){});env.idb.put('prev','',function(){});}catch(e){}}
+    st.rev=0;dirty=false;
+  };
+  self.state=function(){var c={},k;for(k in st)c[k]=st[k];return c;};
+  self.K=K;
+  self.isDirty=function(){return dirty;};
+  self.stop=function(){if(ivl)clearInterval(ivl);ivl=null;if(timer)clearTimeout(timer);timer=null;};
+  // автосохранение по событиям жизненного цикла
+  self.install=function(win,doc,setIv){
+    var f=function(){self.flushNow('life');};
+    doc.addEventListener('visibilitychange',function(){if(doc.hidden)f();});
+    win.addEventListener('pagehide',f);
+    win.addEventListener('beforeunload',f);
+    doc.addEventListener('freeze',f);
+    win.addEventListener('blur',f);
+    win.addEventListener('storage',function(e){self.onStorage(e.key,e.newValue);});
+    ivl=(setIv||setInterval)(function(){if(dirty)self.flushNow('interval');},env.interval||10000);
+  };
+  return self;
+}
+var api={SCHEMA:SCHEMA,sum:sum,wrap:wrap,parse:parse,migrate:migrate,exportCode:exportCode,parseCode:parseCode,mergeSaves:mergeSaves,score:score,create:create,isQuota:isQuota};
+if(typeof module!=='undefined')module.exports=api;
+return api;
+})();
+
+</script>
+<script id="s-content">
+/* ===== Сюжет, артефакты, достижения ===== */
+var CHARS={
+  m:{n:'Мира',e:'👧'},
+  b:{n:'Бублик',e:'🐈'},
+  t:{n:'Дед Тихон',e:'👴'},
+  r:{n:'Рассказчик',e:'📖'},
+  f:{n:'Туман',e:'🌫️'}
+};
+var CHAPTERS=[
+  {n:'Глава 1',name:'Тёмный берег',theme:0,desc:'Маяк погас. Мира собирает осколки линзы по бухте.'},
+  {n:'Глава 2',name:'Туманный лес',theme:1,desc:'Огонь указал на лес. Что ждёт в тумане?'}
+];
+var SCENES={
+intro1:{title:'Тёмная ночь',lines:[
+['r','Бухта Тихая засыпает рано. Но этой ночью не горит маяк — впервые за семьдесят лет.'],
+['m','Дедушка Тихон поднялся на башню вечером и не вернулся. Дверь заперта изнутри. А на столе лежит вот это.'],
+['r','Записка: «Мирочка, линза треснула. Двенадцать осколков в ящиках по всей бухте. Поставь каждый на свой постамент — и огонь вернётся. Не бойся, Бублик знает дорогу. Т.»'],
+['b','Мрр-мяу.'],
+['m','Ладно, Бублик. Показывай. Ящики не тянут, а толкают — это я помню по дедушкиному складу.']]},
+c1a:{title:'Ключ от старого склада',lines:[
+['m','Шесть ящиков встали на места, и осколки засветились! Словно дышат.'],
+['b','Мур. Мур-р-р.'],
+['m','Ты нашёл ключ? В щели между досками... Он подходит к двери старой ключницы. Дедушка никогда её не открывал при мне.'],
+['r','За дверью — тёплый запах дерева и лампового масла. Кто-то был здесь совсем недавно.']]},
+c1b:{title:'Дневник смотрителя',lines:[
+['m','Дневник! Дедушкин почерк. «Туман пришёл в бухту осенью. Он не злой. Он просто потерялся.»'],
+['m','Туман потерялся? Как можно потеряться, если ты туман?'],
+['t','«Маяк — единственное, что он помнит. Поэтому свет нельзя гасить. Если огонь погаснет — он уйдёт в лес и начнёт искать дорогу сам».'],
+['b','Мрр...'],
+['m','Тогда нам надо спешить. Дальше — Ледяная бухта.']]},
+c1c:{title:'Лёд и валенок',lines:[
+['r','Вода в бухте встала льдом за одну ночь. Бублик скользит и недовольно фыркает.'],
+['m','Ха-ха! Держись за хвост... то есть за ящик. Стой! Куда ты катишься?!'],
+['m','Смотри, Бублик, на льду валенок. С вышивкой «Т.». Дедушка был здесь. Совсем недавно!'],
+['b','Мяу!'],
+['m','Идём дальше по следам. Впереди — Нажимная скала.']]},
+c1d:{title:'Скала с секретом',lines:[
+['m','Ворота закрыты. А рядом — плита. Дедушка сам построил этот механизм?'],
+['t','Из записки: «Ворота открываются только тому, кто несёт груз. Чтобы никто не ходил по ночам налегке и не терялся».'],
+['m','Значит, надо поставить ящик на плиту. Ворота будут открыты, пока ящик стоит. Хитро, дедушка!'],
+['r','Последний осколок лежит в Затонувшем складе. Остался последний рывок.']]},
+end1:{title:'Огонь возвращается',lines:[
+['r','Мира поставила последний осколок на постамент. Лампа вздохнула — и маяк вспыхнул.'],
+['m','Получилось! Бублик, смотри — луч!'],
+['r','Белый луч прошёл над бухтой и упёрся в тёмную стену Туманного леса. В луче на мгновение показался силуэт.'],
+['f','…Мира… Ты зажгла… Иди… ко мне…'],
+['m','Это не дедушкин голос. Но он зовёт нас. Бублик, мы идём в лес.'],
+['r','Конец главы 1. Дальше — «Туманный лес».']]},
+intro2:{title:'Туманный лес',lines:[
+['r','В лесу туман такой густой, что собственных ног не видно. Шепчутся раковины, развешанные на ветвях.'],
+['m','Дедушка называл их «почтой». Шагнёшь в одну — выйдешь из другой. Только бы не перепутать.'],
+['b','Мур-р.'],
+['m','Знаю, знаю. Раковины шепчут парами. Ящики через них не пронести — только нас с тобой.']]},
+c2a:{title:'Тёплый чайник',lines:[
+['m','Лагерь! И чайник ещё тёплый. Он ушёл совсем недавно...'],
+['f','Не гони меня. Я только ищу дорогу домой.'],
+['m','Ты — Туман? Ты же не злой! Дедушка писал, что ты просто потерялся.'],
+['f','Корабли... Мои корабли не дошли до порта. Они ищут свет. Они помнят только его.'],
+['m','Расскажи мне всё. Но сначала — мост через овраг.']]},
+c2b:{title:'Гнилой мост',lines:[
+['r','Старый мост через овраг сгнил. Каждая доска выдерживает ровно один шаг.'],
+['m','Пройдёшь — и пути назад нет. Надо думать наперёд, Бублик!'],
+['t','Записка на столбе: «Я не пропал, Мирочка. Я остался провожать корабли-призраки через туман, пока не найду северный огонь. Сам вернуться не мог».'],
+['m','Дедушка жив! Он ждёт, пока маяк зажжётся по-настоящему. Мы почти дошли.']]},
+c2c:{title:'Сердце тумана',lines:[
+['r','Посреди леса — круглая поляна, где туман светится изнутри.'],
+['f','Когда ты зажгла маяк впервые, мои корабли увидели берег. Но дорога к нему ещё не прорисована. Нужно Сердце маяка — последний осколок.'],
+['m','Где он?'],
+['f','Там, где всё запутано больше всего. Но ты справишься. Твой дед в тебя верил.'],
+['b','Мяу.']]},
+end2:{title:'Дом на маяке',lines:[
+['r','Мира собрала Сердце маяка и вернулась на башню. Лампа вспыхнула так, что стало светло, как днём.'],
+['r','Корабли-призраки одно за другим входили в бухту и таяли в рассвете. Туман тихо ушёл с побережья.'],
+['t','Ты выросла, Мирочка. Я слышал каждый твой шаг на лестнице. Прости, что не смог вернуться раньше.'],
+['m','Дедушка! Ты здесь! Маяк горит. Теперь надолго.'],
+['t','Теперь он твой. Хранительнице нужна смена, а старому смотрителю — чай.'],
+['b','Мур-р-р-р.'],
+['r','Конец главы 2. Но море большое. Говорят, на дне есть город, где тоже погас свет… Продолжение следует.']]}
+};
+// после прохождения уровня (ключ "глава-номер") показать сцену
+var SCENE_AT={'1-6':'c1a','1-12':'c1b','1-18':'c1c','1-24':'c1d','1-32':'end1','2-8':'c2a','2-16':'c2b','2-24':'c2c','2-32':'end2'};
+// перед стартом уровня
+var SCENE_BEFORE={'1-1':'intro1','2-1':'intro2'};
+var TIPS={
+'1-3':'Звёзды зависят от числа ходов: чем короче маршрут, тем больше звёзд. Можно перепройти позже.',
+'1-5':'Застряла? Кнопка 💡 покажет ближайшие ходы. Подсказок мало, береги их.',
+'1-10':'Двери и ключи теперь придумывает случайный генератор, но каждый уровень проверен: решение есть.',
+'2-4':'Ящик в портал не проходит — только Мира.'
+};
+// артефакты: 16 на главу (за каждый второй уровень)
+var ARTS=[
+['🔦','Осколок №1','Тёплый, как после горячего чая.'],
+['🐚','Свисток-ракушка','Дед свистел в неё, чтобы позвать Бублика.'],
+['🧭','Компас без стрелки','Стрелка давно ушла в лес.'],
+['🪢','Узел «Тихон»','Такой узел вяжет только один человек в бухте.'],
+['🕯️','Огарок','Последняя свеча перед тем, как зажгли лампу.'],
+['🗝️','Ключ от ключницы','Тяжёлый, с зарубкой на бородке.'],
+['📜','Лоция бухты','Карта с пометками красным карандашом.'],
+['🧦','Шерстяной носок','Один. Второй, видимо, у Бублика.'],
+['🥛','Кружка с трещиной','Из неё пили чай три поколения смотрителей.'],
+['🧊','Кусочек льда','Не тает, даже когда держишь в ладони.'],
+['🪞','Зеркальце','Показывает не лицо, а то, что ты ищешь.'],
+['⚓','Малый якорь','Дед говорил: якорь — это память моря.'],
+['🔔','Колокольчик','Звонил в тумане, чтобы лодки находили причал.'],
+['🪙','Старая монета','Орёл — маяк, решка — море.'],
+['📔','Страница дневника','«Сегодня Мира впервые дошла до верхней ступеньки».'],
+['🌟','Осколок №12','Последний. Он светится изнутри сам.'],
+['🍂','Лист с вышивкой','На листе вышито «Т.» красной ниткой.'],
+['🍄','Серебристый гриб','Светится в тумане. Не есть!'],
+['🪶','Перо совы','Сова — лучший проводник в тумане.'],
+['🕸️','Паутина-карта','Паук свил карту леса. Оказалась точной.'],
+['🫖','Тёплый чайник','Ещё тёплый. Значит, ты на верном пути.'],
+['🌰','Каштан','Бублик играл им, пока не потерял.'],
+['🪵','Доска от моста','На ней вырезано: «Шагай осторожно».'],
+['🧵','Красная нить','Привязана к ветке. Ведёт вглубь леса.'],
+['👻','Фонарик призрака','Холодный свет. Корабли идут на него.'],
+['🌙','Лунный камень','Светится только в ночь прилива.'],
+['📯','Туманный рожок','Гудит, когда рядом корабль.'],
+['🦉','Метка совы','Сова приглашает идти дальше.'],
+['💠','Раковина-шёпот','Если приложить к уху, услышишь голос деда.'],
+['🧶','Клубок','Дед вязал варежки для всей бухты.'],
+['🔮','Сердце маяка','Последний осколок. Теперь маяк горит всегда.'],
+['🌅','Рассвет в бухте','Первый рассвет, который встретили вместе.']
+];
+// достижения: ok(s) принимает сохранение
+function cntDone(s){var n=0;for(var k in s.done)n++;return n;}
+function cnt3(s){var n=0;for(var k in s.done)if(s.done[k].stars>=3)n++;return n;}
+function cntArt(s){var n=0;for(var k in s.art)n++;return n;}
+function chDone(s,c){var n=0;for(var i=1;i<=32;i++)if(s.done[c+'-'+i])n++;return n;}
+function dailyCount(s){var n=0;for(var k in s.daily)n++;return n;}
+var ACH=[
+{id:'first',e:'🌱',n:'Первый шаг',d:'Пройти 1 уровень',ok:function(s){return cntDone(s)>=1;}},
+{id:'l10',e:'🔟',n:'Десятка',d:'Пройти 10 уровней',ok:function(s){return cntDone(s)>=10;}},
+{id:'l30',e:'🧭',n:'Бывалый',d:'Пройти 30 уровней',ok:function(s){return cntDone(s)>=30;}},
+{id:'l64',e:'🏆',n:'Хранитель маяка',d:'Пройти все 64 уровня',ok:function(s){return cntDone(s)>=64;}},
+{id:'ch1',e:'🔦',n:'Свет зажжён',d:'Закончить главу 1',ok:function(s){return chDone(s,1)>=32;}},
+{id:'ch2',e:'🌅',n:'Рассвет в бухте',d:'Закончить главу 2',ok:function(s){return chDone(s,2)>=32;}},
+{id:'s3',e:'⭐',n:'Мастер хода',d:'Получить ★★★ на уровне',ok:function(s){return cnt3(s)>=1;}},
+{id:'s3x10',e:'🌟',n:'Перфекционист',d:'10 уровней на ★★★',ok:function(s){return cnt3(s)>=10;}},
+{id:'s3x30',e:'💫',n:'Звёздный путь',d:'30 уровней на ★★★',ok:function(s){return cnt3(s)>=30;}},
+{id:'noundo',e:'🧠',n:'Без права на ошибку',d:'Пройти сложный уровень (14+ ходов) без отмены',ok:function(s){return !!s.ach.noundo_flag;}},
+{id:'hint',e:'💡',n:'Свет в окошке',d:'Использовать подсказку',ok:function(s){return s.stats.hintsUsed>=1;}},
+{id:'art16',e:'🐚',n:'Коллекционер',d:'Собрать 16 артефактов',ok:function(s){return cntArt(s)>=16;}},
+{id:'art32',e:'📦',n:'Музей бухты',d:'Собрать все 32 артефакта',ok:function(s){return cntArt(s)>=32;}},
+{id:'daily1',e:'📅',n:'Задача дня',d:'Решить ежедневную головоломку',ok:function(s){return dailyCount(s)>=1;}},
+{id:'streak3',e:'🔥',n:'Три дня подряд',d:'Серия ежедневных 3 дня',ok:function(s){return s.streak>=3;}},
+{id:'streak7',e:'🌋',n:'Неделя огня',d:'Серия ежедневных 7 дней',ok:function(s){return s.streak>=7;}}
+];
+function checkAch(s){
+  var nw=[];
+  for(var i=0;i<ACH.length;i++){var a=ACH[i];if(!s.ach[a.id]&&a.ok(s)){s.ach[a.id]=1;nw.push(a);}}
+  return nw;
+}
+if(typeof module!=='undefined')module.exports={CHARS:CHARS,SCENES:SCENES,SCENE_AT:SCENE_AT,SCENE_BEFORE:SCENE_BEFORE,ARTS:ARTS,ACH:ACH,checkAch:checkAch,TIPS:TIPS,CHAPTERS:CHAPTERS};
+
+</script>
+<script id="s-ui">
+/* ===== ИНТЕРФЕЙС «Маяк Тихой Бухты» ===== */
+(function(){
+var $=function(id){return document.getElementById(id);};
+var S=null;
+// ---------- хранилище (см. storage.js) ----------
+function makeIdb(){
+  var idb=null;try{idb=window.indexedDB;}catch(e){idb=null;}
+  if(!idb)return null;
+  var db=null,pending=[],state=0;
+  function flushQ(){var p=pending;pending=[];for(var i=0;i<p.length;i++)p[i](state===2?db:null);}
+  function ensure(cb){
+    if(state===2){cb(db);return;}
+    if(state===3){cb(null);return;}
+    pending.push(cb);if(state===1)return;state=1;
+    try{
+      var r=idb.open('mayak',1);
+      r.onupgradeneeded=function(){try{r.result.createObjectStore('s');}catch(e){}};
+      r.onsuccess=function(){db=r.result;state=2;flushQ();};
+      r.onerror=function(){state=3;flushQ();};r.onblocked=r.onerror;
+    }catch(e){state=3;flushQ();}
+  }
+  return {
+    get:function(k,cb){ensure(function(d){if(!d){cb(null);return;}try{var t=d.transaction('s','readonly').objectStore('s').get(k);t.onsuccess=function(){cb(t.result||null);};t.onerror=function(){cb(null);};}catch(e){cb(null);}});},
+    put:function(k,v,cb){ensure(function(d){if(!d){cb(false);return;}try{var tx=d.transaction('s','readwrite');tx.objectStore('s').put(v,k);tx.oncomplete=function(){cb(true);};tx.onerror=function(){cb(false);};tx.onabort=function(){cb(false);};}catch(e){cb(false);}});}
+  };
+}
+var realLS=null;try{realLS=window.localStorage;}catch(e){realLS=null;}
+var bcast=null;try{if(window.BroadcastChannel)bcast=new BroadcastChannel('mayak');}catch(e){bcast=null;}
+var store=Store.create({
+  ls:realLS,idb:makeIdb(),validate:Eng.Save.validate,
+  onNotice:function(m,kind){toast(m,kind==='info'?3500:7000);},
+  onReplace:function(d){S=d;try{if($('home').className.indexOf('on')>=0)refreshHome();if($('sets').className.indexOf('on')>=0)renderSets();}catch(e){}},
+  onState:function(st){updateSaveInd(st);maybeAutoCloud(st);},
+  broadcast:function(rev){if(bcast)bcast.postMessage(rev);}
+});
+S=Eng.Save.validate(store.bootSync())||Eng.Save.fresh();
+store.bind(function(){return S;});
+function save(){store.request();}
+if(bcast)bcast.onmessage=function(m){store.onRemote(m.data);};
+store.install(window,document);
+store.bootAsync(function(){});
+var persisted=null;
+function askPersist(){try{if(navigator.storage&&navigator.storage.persist){navigator.storage.persist().then(function(p){persisted=p;updateSaveInd(store.state());});}}catch(e){}}
+try{if(navigator.storage&&navigator.storage.persisted)navigator.storage.persisted().then(function(p){persisted=p;});}catch(e){}
+document.addEventListener('touchstart',function f(){askPersist();document.removeEventListener('touchstart',f);},{passive:true});
+document.addEventListener('mousedown',function f2(){askPersist();document.removeEventListener('mousedown',f2);});
+function isStandalone(){return window.navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);}
+function isIOS(){var u=navigator.userAgent||'';return /iPad|iPhone|iPod/.test(u)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
+function lvId(i){var L=LEVELS[i];return L.ch+'-'+L.n;}
+function isDone(i){return !!S.done[lvId(i)];}
+function unlocked(i){return i===0||isDone(i-1);}
+function contIdx(){for(var i=0;i<LEVELS.length;i++)if(!isDone(i))return i;return LEVELS.length-1;}
+function doneCount(){var n=0;for(var k in S.done)n++;return n;}
+function starCount(){var n=0;for(var k in S.done)n+=S.done[k].stars;return n;}
+function artCount(){var n=0;for(var k in S.art)n++;return n;}
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+var tt=null;
+function toast(m,ms){var t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(function(){t.style.display='none';},ms||2600);}
+function vib(ms){if(S.set.vib&&navigator.vibrate){try{navigator.vibrate(ms);}catch(e){}}}
+var AC=null;
+function beep(f,d,type,v,delay){
+  if(!S.set.sound)return;
+  try{
+    if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(!C)return;AC=new C();}
+    if(AC.state==='suspended')AC.resume();
+    var t=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();
+    o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||0.05,t);g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+0.02);
+  }catch(e){}
+}
+// ---------- экраны ----------
+var scrs=['home','map','game','coll','sets','friends'];
+function show(n){
+  for(var i=0;i<scrs.length;i++)$(scrs[i]).className='scr'+(scrs[i]===n?' on':'');
+  if(n==='home')refreshHome();
+  if(n==='map')renderMap();
+  if(n==='coll')renderColl();
+  if(n==='sets')renderSets();
+  if(n==='friends')renderFriends();
+  if(n==='game'){setTimeout(fit,0);}
+}
+function dailyDone(){return !!S.daily[Eng.dateKey()];}
+function refreshHome(){
+  maybeBackupReminder();
+  var n=doneCount(),c=contIdx();
+  $('bCont').textContent=n===0?'▶ Начать игру':(n>=LEVELS.length?'▶ Перепройти':'▶ Продолжить: '+lvId(c));
+  $('hstats').innerHTML='⭐ '+starCount()+'/'+(LEVELS.length*3)+' · 💡 '+S.hints+' · Пройдено '+n+'/'+LEVELS.length+(S.streak>0?' · 🔥 '+S.streak:'');
+  $('bDaily').className='btn sec dotb'+(dailyDone()?'':' dot');
+}
+// ---------- сюжет ----------
+var story=null,typer=null;
+function showStory(id,cb){
+  var sc=SCENES[id];
+  if(!sc){if(cb)cb();return;}
+  S.scenes[id]=1;save();
+  story={sc:sc,i:0,cb:cb,full:'',pos:0};
+  $('story').className='ov on';
+  storyLine();
+}
+function storyLine(){
+  var l=story.sc.lines[story.i],ch=CHARS[l[0]];
+  $('sav').textContent=ch.e;$('swho').textContent=ch.n;
+  story.full=l[1];story.pos=0;$('stxt').textContent='';
+  clearInterval(typer);
+  typer=setInterval(function(){
+    story.pos+=2;
+    $('stxt').textContent=story.full.slice(0,story.pos);
+    if(story.pos>=story.full.length){clearInterval(typer);typer=null;}
+  },22);
+}
+function storyTap(){
+  if(!story)return;
+  if(typer){clearInterval(typer);typer=null;$('stxt').textContent=story.full;return;}
+  story.i++;
+  if(story.i>=story.sc.lines.length)storyEnd();else storyLine();
+}
+function storyEnd(){
+  clearInterval(typer);typer=null;
+  $('story').className='ov';
+  var cb=story?story.cb:null;story=null;
+  if(cb)cb();
+}
+// ---------- игра ----------
+var G=null,cv=$('cv'),ctx=cv.getContext('2d'),fitW=300,fitH=300,dpr=1,dailyCache={};
+var THEMES=[
+ {fa:'#27365f',fb:'#2b3b66',wall:'#0c1330',wtop:'#1d2a55',bg1:'#0f1f45',bg2:'#0a1226',fog:false},
+ {fa:'#284637',fb:'#2c4c3b',wall:'#0a1812',wtop:'#193326',bg1:'#12281f',bg2:'#08120e',fog:true}
+];
+function fit(){
+  var w=$('cwrap'),r=w.getBoundingClientRect();
+  dpr=Math.min(window.devicePixelRatio||1,3);
+  fitW=Math.max(60,r.width);fitH=Math.max(60,r.height);
+  cv.width=Math.round(fitW*dpr);cv.height=Math.round(fitH*dpr);
+}
+function t3(par){return par+Math.ceil(par*0.25)+1;}
+function setupGame(o){
+  var L=Eng.parse(o.rows);
+  G={mode:o.mode,i:o.i,dk:o.dk,rows:o.rows,par:o.par,L:L,st:Eng.init(L),hist:[],moves:0,undos:0,won:false,anim:null,hint:null,cat:-1,theme:o.theme,shake:null,id:o.id,tip:o.tip,path:[],duel:o.duel};
+  $('gTitle').textContent=o.title;$('gSub').textContent=o.sub;
+  var tb=$('tipb');
+  if(o.tip&&!S.scenes['tip:'+o.id]){tb.textContent='💬 '+o.tip;tb.style.display='block';}else tb.style.display='none';
+  replayRun();
+  show('game');
+  hudUpdate();
+}
+function hudUpdate(){
+  var s=Eng.stars(G.par,G.moves);
+  $('gStars').textContent=(s>=3?'★★★':s===2?'★★☆':'★☆☆');
+  $('gMoves').textContent=G.moves;$('gT3').textContent=t3(G.par);
+  $('gHints').textContent='💡 '+S.hints;
+  $('bUndo').disabled=G.hist.length===0;
+}
+function openLevel(i){
+  var d=LEVELS[i],id=d.ch+'-'+d.n;
+  S.cur=i;save();
+  setupGame({mode:'lvl',i:i,rows:d.rows,par:d.par,theme:CHAPTERS[d.ch-1].theme,title:d.ch+'-'+d.n+' · '+d.group,sub:'Глава '+d.ch+': '+CHAPTERS[d.ch-1].name,id:id,tip:d.tip||TIPS[id]||''});
+}
+function startLevel(i){
+  var id=lvId(i),sb=SCENE_BEFORE[id];
+  if(sb&&!S.scenes[sb]){$('game').className='scr';showStory(sb,function(){openLevel(i);});}
+  else openLevel(i);
+}
+function startDaily(){
+  var dk=Eng.dateKey();
+  var d=dailyCache[dk];
+  if(!d){toast('Готовлю головоломку…');setTimeout(function(){d=Eng.genDaily(dk,LEVELS);dailyCache[dk]=d;startDaily();},40);return;}
+  var wd=(new Date(dk+'T12:00:00')).getDay();
+  setupGame({mode:'daily',dk:dk,rows:d.rows,par:d.par,theme:wd%2,title:'Ежедневная · '+dk.split('-').reverse().join('.'),sub:'Серия: '+S.streak+' дн. · награда: 💡',id:'daily-'+dk,tip:''});
+}
+function dismissTip(){var tb=$('tipb');if(tb.style.display!=='none'){tb.style.display='none';if(G&&G.tip){S.scenes['tip:'+G.id]=1;save();}}}
+function posXY(p){return {x:p%G.L.w,y:(p/G.L.w)|0};}
+function doMove(d){
+  if(!G||G.won||$('win').className.indexOf('on')>=0||$('story').className.indexOf('on')>=0)return;
+  var r=Eng.move(G.L,G.st,d);
+  if(!r){G.shake={t0:Date.now(),d:d};beep(110,0.08,'square',0.03);return;}
+  dismissTip();
+  var old=G.st.c,nw=r.s.c,mf=-1,mt=-1,k;
+  for(k=0;k<old.length;k++)if(nw.indexOf(old[k])<0)mf=old[k];
+  for(k=0;k<nw.length;k++)if(old.indexOf(nw[k])<0)mt=nw[k];
+  var dist=Math.abs(posXY(G.st.p).x-posXY(r.s.p).x)+Math.abs(posXY(G.st.p).y-posXY(r.s.p).y);
+  G.anim={t0:Date.now(),dur:r.ev.tele?1:Math.min(260,90+dist*40),fp:G.st.p,tp:r.s.p,mf:mf,mt:mt};
+  G.hist.push({st:G.st,cat:G.cat});G.path.push(d);
+  G.cat=G.st.p;
+  G.st=r.s;G.moves++;G.hint=null;S.stats.moves++;noteRun();
+  var ev=r.ev;
+  if(ev.key){beep(880,0.1,'sine',0.06);beep(1320,0.12,'sine',0.05,0.08);vib(15);}
+  else if(ev.door){beep(330,0.15,'triangle',0.06);vib(15);}
+  else if(ev.tele){beep(500,0.1,'sine',0.05);beep(900,0.14,'sine',0.05,0.08);vib(12);}
+  else if(ev.push){beep(150,0.09,'triangle',0.07);vib(8);}
+  else if(ev.crack){beep(260,0.12,'sawtooth',0.03);}
+  else if(ev.slide){beep(700,0.12,'sine',0.03);}
+  else beep(240,0.04,'sine',0.03);
+  hudUpdate();
+  if(Eng.isWin(G.L,G.st))setTimeout(onWin,380);
+}
+function noteRun(){
+  if(!G||G.mode==='duel')return;
+  S.run=G.path.length?{id:G.id,path:G.path.join('')}:null;save();
+}
+function replayRun(){
+  if(!S.run||S.run.id!==G.id||G.mode==='duel')return;
+  var p=S.run.path,k,st=G.st,hist=[],path=[],cat=-1;
+  for(k=0;k<p.length;k++){
+    var d=p.charCodeAt(k)-48,r=Eng.move(G.L,st,d);
+    if(!r||Eng.isWin(G.L,st)){S.run=null;return;}
+    hist.push({st:st,cat:cat});path.push(d);cat=st.p;st=r.s;
+  }
+  if(Eng.isWin(G.L,st)){S.run=null;return;}
+  G.st=st;G.hist=hist;G.path=path;G.cat=cat;G.moves=path.length;
+  if(path.length)toast('Продолжаем с того места, где ты остановилась');
+}
+function undo(){
+  if(!G||G.won||!G.hist.length)return;
+  var h=G.hist.pop();G.path.pop();G.st=h.st;G.cat=h.cat;G.moves--;G.anim=null;G.hint=null;S.stats.undos++;G.undos++;noteRun();
+  beep(300,0.06,'sine',0.03);hudUpdate();
+}
+function resetLevel(){
+  if(!G||G.won)return;
+  G.st=Eng.init(G.L);G.hist=[];G.path=[];G.moves=0;G.anim=null;G.hint=null;G.cat=-1;S.stats.restarts++;noteRun();hudUpdate();
+}
+function hint(){
+  if(!G||G.won)return;
+  if(S.hints<=0){toast('Подсказок нет. Они даются за новые уровни и ежедневную задачу.');return;}
+  toast('Думаю…');
+  setTimeout(function(){
+    var r=Eng.solve(G.L,G.st,500000);
+    if(!r.ok){toast(r.capped?'Слишком сложно просчитать. Попробуй отмену.':'Тупик! Нажми «Отмена» или «Заново».');return;}
+    S.hints--;S.stats.hintsUsed++;
+    var path=[],s=G.st,k;
+    for(k=0;k<r.path.length&&k<5;k++){var m=Eng.move(G.L,s,r.path[k]);s=m.s;path.push({p:s.p,d:r.path[k]});}
+    G.hint={path:path,from:G.st.p,exp:Date.now()+6000};
+    toast('Осталось ходов до победы: '+r.moves+'. Показаны ближайшие.');
+    var nw=checkAch(S);save();hudUpdate();if(nw.length)ach(nw);
+  },30);
+}
+function ach(nw){
+  var m='';for(var i=0;i<nw.length;i++)m+=(i?' · ':'')+nw[i].e+' '+nw[i].n;
+  setTimeout(function(){toast('Достижение: '+m);},600);
+}
+var pendingScene=null;
+function onWin(){
+  if(!G||G.won)return;
+  G.won=true;S.run=null;
+  var stars=Eng.stars(G.par,G.moves),extra=[];
+  S.stats.played=(S.stats.played||0)+1;
+  if(G.mode==='lvl'){
+    var id=G.id,prev=S.done[id],isNew=!prev;
+    if(!prev||stars>prev.stars||(stars===prev.stars&&G.moves<prev.moves))S.done[id]={stars:Math.max(stars,prev?prev.stars:0),moves:(prev&&stars<prev.stars)?prev.moves:G.moves};
+    if(isNew){
+      S.stats.levels++;
+      if(S.hints<9){S.hints++;extra.push('+1 💡 подсказка');}
+      var lv=LEVELS[G.i];
+      if(lv.n%2===0){
+        var ai=(lv.ch-1)*16+lv.n/2-1;
+        if(!S.art[ai]){S.art[ai]=1;extra.push('Находка: '+ARTS[ai][0]+' '+ARTS[ai][1]);}
+      }
+    }
+    if(G.undos===0&&G.par>=14)S.ach.noundo_flag=1;
+    pendingScene=SCENE_AT[id]&&!S.scenes[SCENE_AT[id]]?SCENE_AT[id]:null;
+  }else if(G.mode==='daily'){
+    var dk=G.dk,pd=S.daily[dk];
+    if(!pd){
+      S.daily[dk]={stars:stars,moves:G.moves};
+      var y=new Date(dk+'T12:00:00');y.setDate(y.getDate()-1);
+      S.streak=(S.lastDaily===Eng.dateKey(y))?S.streak+1:1;S.lastDaily=dk;
+      if(S.hints<9)S.hints++;
+      extra.push('+1 💡 · серия '+S.streak+' дн.');
+    }else if(stars>pd.stars||G.moves<pd.moves){S.daily[dk]={stars:Math.max(stars,pd.stars),moves:Math.min(G.moves,pd.moves)};}
+    pendingScene=null;
+  }else pendingScene=null;
+  submitWin(stars);
+  var nw=checkAch(S);
+  for(var i=0;i<nw.length;i++)extra.push('Достижение: '+nw[i].e+' '+nw[i].n);
+  save();
+  beep(523,0.14,'sine',0.06);beep(659,0.14,'sine',0.06,0.12);beep(784,0.2,'sine',0.06,0.24);vib(40);
+  var h='';for(var s=1;s<=3;s++)h+='<i class="'+(s<=stars?'':'off')+'">★</i>';
+  $('wStars').innerHTML=h;
+  $('wTitle').textContent=stars===3?'Идеально!':'Уровень пройден!';
+  $('wInfo').textContent='Ходов: '+G.moves+' · лучший маршрут: '+G.par+(stars<3?' · ★★★ до '+t3(G.par)+' ходов':'');
+  $('wExtra').innerHTML=extra.map(esc).join('<br>');
+  $('wNext').textContent=(G.mode==='daily')?'Домой':(G.mode==='duel')?'К друзьям':(G.i>=LEVELS.length-1?'К карте':'Дальше ▸');
+  $('win').className='ov on';
+  hudUpdate();
+  askPersist();maybeA2HS();
+}
+function leaveWin(cb){
+  $('win').className='ov';
+  var sc=pendingScene;pendingScene=null;
+  if(sc)showStory(sc,cb);else cb();
+}
+// ---------- рисование ----------
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arc(x+w-r,y+r,r,-Math.PI/2,0);ctx.lineTo(x+w,y+h-r);ctx.arc(x+w-r,y+h-r,r,0,Math.PI/2);ctx.lineTo(x+r,y+h);ctx.arc(x+r,y+h-r,r,Math.PI/2,Math.PI);ctx.lineTo(x,y+r);ctx.arc(x+r,y+r,r,Math.PI,Math.PI*1.5);ctx.closePath();}
+function emo(t,cx,cy,sz){ctx.font=Math.round(sz)+'px -apple-system,"Apple Color Emoji","Segoe UI Emoji",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.fillText(t,cx,cy);}
+function draw(now){
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  var th=THEMES[G?G.theme:0];
+  var bg=ctx.createLinearGradient(0,0,0,fitH);bg.addColorStop(0,th.bg1);bg.addColorStop(1,th.bg2);
+  ctx.fillStyle=bg;ctx.fillRect(0,0,fitW,fitH);
+  if(!G)return;
+  var L=G.L,st=G.st,ts=Math.floor(Math.min((fitW-8)/L.w,(fitH-8)/L.h));ts=Math.max(16,Math.min(ts,68));
+  var ox=Math.floor((fitW-ts*L.w)/2),oy=Math.floor((fitH-ts*L.h)/2);
+  G.ts=ts;G.ox=ox;G.oy=oy;
+  var a=1,an=G.anim;
+  if(an){a=Math.min(1,(now-an.t0)/an.dur);if(a>=1){G.anim=null;an=null;a=1;}else a=1-Math.pow(1-a,2);}
+  var sx=0,sy=0;
+  if(G.shake){var q=(now-G.shake.t0)/160;if(q>=1)G.shake=null;else{var m=Math.sin(q*Math.PI*3)*ts*0.07*(1-q);sx=Eng.DX[G.shake.d]*m;sy=Eng.DY[G.shake.d]*m;}}
+  var gOpen=Eng.gateOpen(L,st),x,y,i,c;
+  for(y=0;y<L.h;y++)for(x=0;x<L.w;x++){
+    i=y*L.w+x;c=L.t[i];var px=ox+x*ts,py=oy+y*ts;
+    if(c==='#'){
+      // стену рисуем, только если рядом есть не-стена
+      var near=false,dx,dy;
+      for(dy=-1;dy<=1&&!near;dy++)for(dx=-1;dx<=1;dx++){var nx=x+dx,ny=y+dy;if(nx>=0&&ny>=0&&nx<L.w&&ny<L.h&&L.t[ny*L.w+nx]!=='#'){near=true;break;}}
+      if(!near)continue;
+      ctx.fillStyle=th.wall;rr(px+1,py+1,ts-2,ts-2,ts*0.18);ctx.fill();
+      ctx.fillStyle=th.wtop;rr(px+1,py+1,ts-2,ts*0.42,ts*0.18);ctx.fill();
+      continue;
+    }
+    ctx.fillStyle=((x+y)&1)?th.fa:th.fb;ctx.fillRect(px,py,ts,ts);
+    var cx=px+ts/2,cy=py+ts/2;
+    if(c==='T'){
+      ctx.strokeStyle='#ffd36b';ctx.lineWidth=Math.max(2,ts*0.07);ctx.beginPath();ctx.arc(cx,cy,ts*0.3,0,7);ctx.stroke();
+      ctx.fillStyle='rgba(255,211,107,.18)';ctx.beginPath();ctx.arc(cx,cy,ts*0.3,0,7);ctx.fill();
+    }else if(c==='_'){
+      ctx.fillStyle='#8fd3f4';ctx.fillRect(px+1,py+1,ts-2,ts-2);
+      ctx.strokeStyle='rgba(255,255,255,.75)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px+ts*0.2,py+ts*0.7);ctx.lineTo(px+ts*0.5,py+ts*0.3);ctx.moveTo(px+ts*0.5,py+ts*0.8);ctx.lineTo(px+ts*0.8,py+ts*0.45);ctx.stroke();
+    }else if(c==='p'){
+      ctx.fillStyle=gOpen?'#56d68a':'#7b8bb8';ctx.beginPath();ctx.arc(cx,cy,ts*0.33,0,7);ctx.fill();
+      ctx.strokeStyle='#1b2547';ctx.lineWidth=2;ctx.stroke();
+    }else if(c==='g'){
+      ctx.fillStyle='#1b2547';ctx.fillRect(px+1,py+1,ts-2,ts-2);
+      ctx.fillStyle=gOpen?'rgba(86,214,138,.35)':'#d4a54a';
+      var bh=gOpen?ts*0.18:ts*0.8;
+      for(var bi=0;bi<4;bi++)ctx.fillRect(px+ts*(0.12+bi*0.22),py+ts*0.1,ts*0.1,bh);
+    }else if(c==='x'){
+      if(st.m[L.mi[i]]){ctx.fillStyle='#08101f';ctx.fillRect(px,py,ts,ts);ctx.strokeStyle='rgba(120,170,255,.35)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(cx,cy,ts*(0.15+0.1*Math.sin(now/400+i)),0,7);ctx.stroke();}
+      else{ctx.fillStyle='#a07a52';ctx.fillRect(px+1,py+1,ts-2,ts-2);ctx.strokeStyle='#4a3320';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px+ts*0.2,py+ts*0.25);ctx.lineTo(px+ts*0.45,py+ts*0.5);ctx.lineTo(px+ts*0.35,py+ts*0.75);ctx.moveTo(px+ts*0.45,py+ts*0.5);ctx.lineTo(px+ts*0.8,py+ts*0.6);ctx.stroke();}
+    }else if(c==='a'||c==='b'){
+      var col=c==='a'?'#4fe3ff':'#ff7ad9',k2;
+      for(k2=0;k2<3;k2++){ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.globalAlpha=1-k2*0.25;var ang=now/350+k2*2;ctx.beginPath();ctx.arc(cx,cy,ts*(0.36-k2*0.1),ang,ang+4.2);ctx.stroke();}
+      ctx.globalAlpha=1;
+    }else if(c==='D'&&!st.m[L.mi[i]]){
+      ctx.fillStyle='#6b4423';rr(px+ts*0.08,py+ts*0.06,ts*0.84,ts*0.88,ts*0.12);ctx.fill();
+      ctx.strokeStyle='#d4a54a';ctx.lineWidth=2;ctx.stroke();emo('🔒',cx,cy,ts*0.46);
+    }else if(c==='k'&&!st.m[L.mi[i]]){
+      emo('🔑',cx,cy+Math.sin(now/300+i)*ts*0.04,ts*0.62);
+    }
+  }
+  // подсказка
+  if(G.hint&&now<G.hint.exp){
+    var hp=posXY(G.hint.from),hx=ox+hp.x*ts+ts/2+sx,hy=oy+hp.y*ts+ts/2+sy;
+    ctx.strokeStyle='rgba(255,211,107,.9)';ctx.lineWidth=Math.max(3,ts*0.1);ctx.setLineDash([ts*0.2,ts*0.15]);ctx.beginPath();ctx.moveTo(hx,hy);
+    var hh;for(hh=0;hh<G.hint.path.length;hh++){var pp=posXY(G.hint.path[hh].p);ctx.lineTo(ox+pp.x*ts+ts/2,oy+pp.y*ts+ts/2);}
+    ctx.stroke();ctx.setLineDash([]);
+    var lp=posXY(G.hint.path[G.hint.path.length-1].p);ctx.fillStyle='#ffd36b';ctx.beginPath();ctx.arc(ox+lp.x*ts+ts/2,oy+lp.y*ts+ts/2,ts*0.12,0,7);ctx.fill();
+  }else if(G.hint)G.hint=null;
+  // ящики
+  var j;
+  for(j=0;j<st.c.length;j++){
+    var cp=st.c[j],cpp=posXY(cp),fx=cpp.x,fy=cpp.y;
+    if(an&&an.mt===cp&&an.mf>=0){var f0=posXY(an.mf);fx=f0.x+(cpp.x-f0.x)*a;fy=f0.y+(cpp.y-f0.y)*a;}
+    var bx=ox+fx*ts,by=oy+fy*ts,onT=L.t[cp]==='T',pad=ts*0.1;
+    if(onT){ctx.fillStyle='rgba(255,211,107,.35)';ctx.beginPath();ctx.arc(bx+ts/2,by+ts/2,ts*0.55,0,7);ctx.fill();}
+    ctx.fillStyle=onT?'#e8b34a':'#b9803f';rr(bx+pad,by+pad,ts-pad*2,ts-pad*2,ts*0.12);ctx.fill();
+    ctx.strokeStyle=onT?'#7a5410':'#5c3a14';ctx.lineWidth=Math.max(2,ts*0.05);ctx.stroke();
+    ctx.strokeStyle=onT?'rgba(122,84,16,.5)':'rgba(92,58,20,.55)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(bx+pad,by+ts/2);ctx.lineTo(bx+ts-pad,by+ts/2);ctx.stroke();
+    // линза
+    ctx.fillStyle=onT?'#fff7c4':'#bfe9ff';ctx.beginPath();ctx.moveTo(bx+ts/2,by+ts*0.3);ctx.lineTo(bx+ts*0.66,by+ts/2);ctx.lineTo(bx+ts/2,by+ts*0.7);ctx.lineTo(bx+ts*0.34,by+ts/2);ctx.closePath();ctx.fill();
+  }
+  // кот
+  if(G.cat>=0&&G.cat!==st.p&&st.c.indexOf(G.cat)<0){
+    var cc=posXY(G.cat);emo('🐈',ox+cc.x*ts+ts/2+sx,oy+cc.y*ts+ts*0.56+sy,ts*0.55);
+  }
+  // игрок
+  var pp2=posXY(st.p),qx=pp2.x,qy=pp2.y;
+  if(an&&an.tp===st.p&&!(an.dur<=1)){var p0=posXY(an.fp);qx=p0.x+(pp2.x-p0.x)*a;qy=p0.y+(pp2.y-p0.y)*a;}
+  emo('👧',ox+qx*ts+ts/2+sx,oy+qy*ts+ts*0.52+sy,ts*0.78);
+  if(st.keys>0)emo('🔑',ox+qx*ts+ts*0.85,oy+qy*ts+ts*0.18,ts*0.38);
+  if(th.fog){
+    for(var f=0;f<4;f++){var fxp=((now/(60+f*17)+f*190)%(fitW+240))-120,fyp=fitH*(0.15+0.22*f);var gr=ctx.createRadialGradient(fxp,fyp,4,fxp,fyp,130);gr.addColorStop(0,'rgba(210,235,225,.10)');gr.addColorStop(1,'rgba(210,235,225,0)');ctx.fillStyle=gr;ctx.fillRect(fxp-130,fyp-130,260,260);}
+  }
+}
+function tick(){
+  if($('game').className.indexOf('on')>=0&&G)draw(Date.now());
+  window.requestAnimationFrame(tick);
+}
+// ---------- ввод ----------
+var tx=0,ty=0,tdown=false;
+function inputEnd(x,y){
+  if(!tdown)return;tdown=false;
+  var dx=x-tx,dy=y-ty,ax=Math.abs(dx),ay=Math.abs(dy);
+  if(Math.max(ax,ay)>=24){doMove(ax>ay?(dx>0?1:3):(dy>0?2:0));return;}
+  if(!G||!G.ts)return;
+  var r=cv.getBoundingClientRect(),p=posXY(G.st.p);
+  var cx=G.ox+p.x*G.ts+G.ts/2,cy=G.oy+p.y*G.ts+G.ts/2,ex=x-r.left-cx,ey=y-r.top-cy;
+  if(Math.max(Math.abs(ex),Math.abs(ey))<G.ts*0.3)return;
+  doMove(Math.abs(ex)>Math.abs(ey)?(ex>0?1:3):(ey>0?2:0));
+}
+cv.addEventListener('touchstart',function(e){e.preventDefault();var t=e.changedTouches[0];tx=t.clientX;ty=t.clientY;tdown=true;},{passive:false});
+cv.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
+cv.addEventListener('touchend',function(e){e.preventDefault();var t=e.changedTouches[0];inputEnd(t.clientX,t.clientY);},{passive:false});
+cv.addEventListener('mousedown',function(e){tx=e.clientX;ty=e.clientY;tdown=true;});
+window.addEventListener('mouseup',function(e){inputEnd(e.clientX,e.clientY);});
+document.addEventListener('gesturestart',function(e){e.preventDefault();});
+window.addEventListener('keydown',function(e){
+  if($('game').className.indexOf('on')<0)return;
+  var k=e.key,m={ArrowUp:0,ArrowRight:1,ArrowDown:2,ArrowLeft:3,w:0,d:1,s:2,a:3};
+  if(m[k]!==undefined){e.preventDefault();doMove(m[k]);}
+  else if(k==='z'||k==='Z'||k==='Backspace')undo();
+  else if(k==='r'||k==='R')resetLevel();
+});
+window.addEventListener('resize',function(){fit();});
+window.addEventListener('orientationchange',function(){setTimeout(fit,200);});
+// ---------- карта ----------
+var mapCh=1;
+function renderMap(){
+  var c=contIdx();mapCh=mapCh||LEVELS[c].ch;
+  var tabs='',k;
+  for(k=1;k<=CHAPTERS.length;k++){
+    var lk=(k>1&&!isDone((k-1)*32-1));
+    tabs+='<button data-ch="'+k+'" class="'+(k===mapCh?'on':'')+'">'+(lk?'🔒 ':'')+CHAPTERS[k-1].n+'</button>';
+  }
+  $('chtabs').innerHTML=tabs;
+  var btn=$('chtabs').getElementsByTagName('button');
+  for(k=0;k<btn.length;k++)btn[k].onclick=function(){var ch=parseInt(this.getAttribute('data-ch'),10);if(ch>1&&!isDone((ch-1)*32-1)){toast('Сначала закончи главу '+(ch-1));return;}mapCh=ch;renderMap();};
+  var h='',cnt=0,st3=0,i,last='';
+  for(i=0;i<LEVELS.length;i++)if(LEVELS[i].ch===mapCh&&isDone(i)){cnt++;st3+=S.done[lvId(i)].stars;}
+  h+='<div class="chead"><b>'+esc(CHAPTERS[mapCh-1].n+': '+CHAPTERS[mapCh-1].name)+'</b><small>'+esc(CHAPTERS[mapCh-1].desc)+'</small><small>Пройдено '+cnt+'/32 · ⭐ '+st3+'/96</small></div>';
+  var open=false;
+  for(i=0;i<LEVELS.length;i++){
+    var d=LEVELS[i];if(d.ch!==mapCh)continue;
+    if(d.group!==last){if(open)h+='</div>';h+='<div class="gname">'+esc(d.group)+'</div><div class="nodes">';open=true;last=d.group;}
+    var dn=S.done[lvId(i)],ul=unlocked(i),cls='node'+(dn?' done':'')+(!ul?' lock':'')+(ul&&!dn&&i===c?' cur':'');
+    var stt=dn?'★★★'.slice(0,dn.stars)+'☆☆☆'.slice(0,3-dn.stars):(ul?'':'🔒');
+    h+='<button class="'+cls+'" data-i="'+i+'">'+d.n+'<small>'+stt+'</small></button>';
+  }
+  if(open)h+='</div>';
+  $('maplist').innerHTML=h;
+  var nodes=$('maplist').getElementsByClassName('node');
+  for(k=0;k<nodes.length;k++)nodes[k].onclick=function(){var ii=parseInt(this.getAttribute('data-i'),10);if(!unlocked(ii)){toast('Сначала пройди предыдущий уровень');return;}startLevel(ii);};
+  $('mapst').textContent='⭐ '+starCount();
+  $('mapsub').textContent='Всего пройдено '+doneCount()+'/'+LEVELS.length;
+}
+// ---------- коллекция ----------
+var collTab='art';
+function renderColl(){
+  var b=$('ctabs').getElementsByTagName('button'),k;
+  for(k=0;k<b.length;k++)b[k].className=(b[k].getAttribute('data-t')===collTab?'on':'');
+  var na=0;for(k in S.ach)if(k.indexOf('_flag')<0)na++;
+  $('collsub').textContent='Артефакты '+artCount()+'/'+ARTS.length+' · Достижения '+na+'/'+ACH.length;
+  var h='',i;
+  if(collTab==='art'){
+    h+='<div class="grid">';
+    for(i=0;i<ARTS.length;i++){
+      if(S.art[i])h+='<button class="art" data-a="'+i+'"><b>'+ARTS[i][0]+'</b>'+esc(ARTS[i][1])+'</button>';
+      else h+='<div class="art no"><b>❔</b>Глава '+(i<16?1:2)+', ур. '+((i%16)*2+2)+'</div>';
+    }
+    h+='</div>';
+  }else if(collTab==='diary'){
+    var ids=['intro1','c1a','c1b','c1c','c1d','end1','intro2','c2a','c2b','c2c','end2'],any=false;
+    for(i=0;i<ids.length;i++){
+      if(S.scenes[ids[i]]){any=true;h+='<button class="row" data-s="'+ids[i]+'"><div class="ic">📖</div><div class="mid"><b>'+esc(SCENES[ids[i]].title)+'</b><small>Нажми, чтобы перечитать</small></div></button>';}
+      else h+='<div class="row no"><div class="ic">🔒</div><div class="mid"><b>Страница дневника</b><small>Откроется по ходу истории</small></div></div>';
+    }
+  }else{
+    for(i=0;i<ACH.length;i++){
+      var a=ACH[i],ok=!!S.ach[a.id];
+      h+='<div class="row'+(ok?'':' no')+'"><div class="ic">'+(ok?a.e:'🔒')+'</div><div class="mid"><b>'+esc(a.n)+'</b><small>'+esc(a.d)+'</small></div></div>';
+    }
+  }
+  $('collbody').innerHTML=h;
+  var bs=$('collbody').getElementsByTagName('button');
+  for(k=0;k<bs.length;k++)bs[k].onclick=function(){
+    var ai=this.getAttribute('data-a'),si=this.getAttribute('data-s');
+    if(ai!==null){var A=ARTS[parseInt(ai,10)];modal(A[1],A[0],A[2]);}
+    else if(si)showStory(si,function(){});
+  };
+}
+function modal(t,ic,tx){$('mTitle').textContent=t;$('mIcon').textContent=ic||'';$('mText').textContent=tx||'';$('modal').className='ov mid on';}
+// ---------- настройки и сохранение ----------
+function fmtT(t){var d=new Date(t);return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2);}
+var blinkT=null;
+function updateSaveInd(st){
+  var ok=(st.lsOk||st.idbOk);
+  var info=(st.lastSaved?'Сохранено ✓ '+fmtT(st.lastSaved):'Ещё не сохранялось')+' · рев. '+st.rev+' · браузер '+(st.lsOk?'✓':'✗')+' · резерв '+(st.idbOk?'✓':'✗')+(persisted===true?' · защищено ✓':'')+(st.restored?' · восстановлено: '+st.restored:'');
+  var si=$('saveInfo');if(si){si.textContent=info;si.style.color=ok?'var(--ok)':'var(--bad)';}
+  var hs=$('homeSave');if(hs)hs.textContent=ok?('💾 '+(st.lastSaved?'сохранено '+fmtT(st.lastSaved):'автосохранение включено')):'⚠ сохранение не работает';
+  if(st.writing){var el=$('saveInd');if(el){el.className='dot2 blink';clearTimeout(blinkT);blinkT=setTimeout(function(){el.className='dot2';},520);}}
+  var bar=$('savebar');
+  if(bar){
+    if(!st.lsOk&&!st.idbOk){bar.style.display='block';$('savebarTxt').textContent='⚠ Сохранение не работает (приватный режим браузера или нет места). Прогресс пропадёт при закрытии. '+(st.err||'');}
+    else bar.style.display='none';
+  }
+}
+function copyText(text,okMsg){
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){toast(okMsg);},function(){copyFallback(text,okMsg);});return;}}catch(e){}
+  copyFallback(text,okMsg);
+}
+function copyFallback(text,okMsg){
+  var t=document.createElement('textarea');t.value=text;t.style.cssText='position:fixed;left:0;top:0;opacity:0;font-size:16px';document.body.appendChild(t);
+  t.focus();t.select();
+  try{t.setSelectionRange(0,text.length);var r=document.execCommand('copy');toast(r?okMsg:'Не удалось скопировать: открой «Показать код» и скопируй вручную');}catch(e){toast('Не удалось скопировать: открой «Показать код» и скопируй вручную');}
+  document.body.removeChild(t);
+}
+function currentCode(){S.meta.lastExport=Date.now();store.flushNow('force');return Store.exportCode(S,store.state().rev,Date.now());}
+function renderSets(){
+  $('swSound').className='sw'+(S.set.sound?' on':'');
+  $('swVib').className='sw'+(S.set.vib?' on':'');
+  $('taOut').style.display='none';$('bCopy').style.display='none';$('taIn').style.display='none';$('bImpGo').style.display='none';
+  updateSaveInd(store.state());
+}
+$('swSound').onclick=function(){S.set.sound=!S.set.sound;save();renderSets();beep(660,0.1,'sine',0.06);};
+$('swVib').onclick=function(){S.set.vib=!S.set.vib;save();renderSets();vib(30);};
+$('bExp').onclick=function(){var t=$('taOut');t.value=currentCode();t.style.display='block';$('bCopy').style.display='inline-block';};
+$('bCopy').onclick=function(){copyText($('taOut').value,'Скопировано');};
+$('bCopyNow').onclick=function(){copyText(currentCode(),'Сейв скопирован. Вставь его в заметки или отправь себе.');};
+$('bImp').onclick=function(){$('taIn').style.display='block';$('bImpGo').style.display='inline-block';};
+$('bImpGo').onclick=function(){
+  var r=Store.parseCode($('taIn').value,Eng.Save.validate);
+  if(!r.ok){toast('Не загружено: '+r.error,5000);return;}
+  var a=Store.score(r.data),b=Store.score(S);
+  var msg='В коде: пройдено '+a.levels+', ⭐'+a.stars+(r.ts?', сохранён '+new Date(r.ts).toLocaleString():'')+(r.legacy?' (старый формат, без контрольной суммы)':' (контрольная сумма верна)')+'.\nСейчас у тебя: пройдено '+b.levels+', ⭐'+b.stars+'.'+(a.score<b.score?'\n⚠ В коде прогресса МЕНЬШЕ, чем сейчас!':'')+'\n\nЗаменить текущий прогресс?';
+  if(!window.confirm(msg))return;
+  S=r.data;G=null;store.flushNow('force');toast('Прогресс загружен: пройдено '+a.levels);renderSets();
+};
+$('bWipe').onclick=function(){
+  if(!window.confirm('Удалить весь прогресс? Это нельзя отменить.'))return;
+  if(!window.confirm('Точно удалить? Копии сохранения тоже будут стёрты.'))return;
+  store.wipe();S=Eng.Save.fresh();G=null;store.flushNow('force');toast('Прогресс сброшен');show('home');
+};
+$('savebarBtn').onclick=function(){show('sets');$('bExp').onclick();};
+function maybeA2HS(){
+  if(isStandalone()||!isIOS()||S.meta.a2hs||doneCount()<3)return;
+  S.meta.a2hs=Date.now();save();
+  setTimeout(function(){modal('Не потеряй прогресс','📲','Safari может чистить данные сайтов. Добавь игру на экран «Домой»: кнопка «Поделиться» → «На экран Домой». И раз в неделю делай экспорт сохранения в Настройках.');},1800);
+}
+function maybeBackupReminder(){
+  var d=86400000,t=Date.now();
+  if(doneCount()<5||t-S.meta.lastExport<7*d||t-S.meta.lastRemind<d)return;
+  S.meta.lastRemind=t;save();
+  setTimeout(function(){toast('💾 Давно не было резервной копии. Настройки → «Скопировать сейв».',6000);},800);
+}
+// ---------- кнопки ----------
+$('bCont').onclick=function(){if(doneCount()>=LEVELS.length){mapCh=1;show('map');}else startLevel(contIdx());};
+$('bMap').onclick=function(){mapCh=LEVELS[contIdx()].ch;show('map');};
+$('bDaily').onclick=function(){startDaily();};
+$('bColl').onclick=function(){show('coll');};
+$('bFriends').onclick=function(){show('friends');};
+$('bSet').onclick=function(){show('sets');};
+var gb=document.querySelectorAll('[data-go]'),gi;
+for(gi=0;gi<gb.length;gi++)gb[gi].onclick=function(){show(this.getAttribute('data-go'));};
+var ct=$('ctabs').getElementsByTagName('button');
+for(gi=0;gi<ct.length;gi++)ct[gi].onclick=function(){collTab=this.getAttribute('data-t');renderColl();};
+$('gBack').onclick=function(){save();if(G&&G.mode==='duel')show('friends');else if(G&&G.mode==='daily')show('home');else{if(G)mapCh=LEVELS[G.i].ch;show('map');}};
+$('bUndo').onclick=undo;$('bReset').onclick=resetLevel;$('bHint').onclick=hint;
+$('story').onclick=storyTap;
+$('sskip').onclick=function(e){e.stopPropagation();storyEnd();};
+$('mOk').onclick=function(){$('modal').className='ov mid';};
+$('wNext').onclick=function(){
+  leaveWin(function(){
+    if(G.mode==='daily'){show('home');return;}
+    if(G.mode==='duel'){show('friends');return;}
+    if(G.i>=LEVELS.length-1){mapCh=2;show('map');return;}
+    startLevel(G.i+1);
+  });
+};
+$('wAgain').onclick=function(){leaveWin(function(){var o=G;setupGame({mode:o.mode,i:o.i,dk:o.dk,duel:o.duel,rows:o.rows,par:o.par,theme:o.theme,title:$('gTitle').textContent,sub:$('gSub').textContent,id:o.id,tip:''});});};
+$('wMap').onclick=function(){leaveWin(function(){if(G.mode==='duel')show('friends');else if(G.mode==='daily')show('home');else{mapCh=LEVELS[G.i].ch;show('map');}});};
+// ---------- друзья и дуэли (необязательный слой; без сервера игра работает как раньше) ----------
+var NET=null;try{NET=JSON.parse(localStorage.getItem('mayak_net')||'null');}catch(e){}
+function netSave(){try{localStorage.setItem('mayak_net',JSON.stringify(NET));}catch(e){}}
+function api(method,path,body,cb){
+  if(location.protocol!=='http:'&&location.protocol!=='https:'){cb(0,{error:'offline'});return;}
+  var x=new XMLHttpRequest();
+  try{x.open(method,path,true);}catch(e){cb(0,{error:'offline'});return;}
+  x.timeout=7000;x.setRequestHeader('Content-Type','application/json');
+  if(NET&&NET.id){x.setRequestHeader('X-Id',NET.id);x.setRequestHeader('X-Token',NET.token);}
+  x.onload=function(){var j=null;try{j=JSON.parse(x.responseText);}catch(e){}cb(x.status,j||{error:'bad'});};
+  x.onerror=function(){cb(0,{error:'offline'});};x.ontimeout=x.onerror;
+  try{x.send(body?JSON.stringify(body):null);}catch(e){cb(0,{error:'offline'});}
+}
+var frTab='daily';
+function hhmm(t){var d=new Date(t);return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
+function frBox(h){$('frbody').innerHTML=h;}
+function renderFriends(){
+  $('frsub').textContent='';
+  frBox('<div class="chead"><b>Проверяю связь…</b></div>');
+  api('GET','/api/ping',null,function(c,j){
+    if(c!==200){
+      frBox('<div class="chead"><b>📡 Нет связи</b><small>Друзья работают, только когда игра открыта через сервер. Без него вся игра доступна как обычно, ничего не потеряно.</small></div><button class="btn sec" id="frRetry">Повторить</button>');
+      $('frRetry').onclick=renderFriends;return;
+    }
+    if(!NET||!NET.id){
+      frBox('<div class="chead"><b>Создай профиль</b><small>Без почты и паролей: только ник (2–16 символов: буквы, цифры, пробел, _ -). Профиль хранится в этом браузере.</small></div><input id="frNick" maxlength="16" placeholder="Твой ник" style="width:100%;padding:12px;border-radius:12px;border:1px solid #2c3d70;background:#0c1530;color:#fff;font-size:16px;-webkit-user-select:text;user-select:text"><button class="btn gold" id="frReg">Создать профиль</button>');
+      $('frReg').onclick=function(){
+        api('POST','/api/register',{nick:$('frNick').value},function(c2,j2){
+          if(c2===200){NET={id:j2.id,token:j2.token,code:j2.code,nick:j2.nick};netSave();renderFriends();}
+          else toast(j2.error||'Ошибка');
+        });
+      };
+      return;
+    }
+    api('GET','/api/me',null,function(c2,me){
+      if(c2===401){NET=null;netSave();toast('Профиль не найден на сервере. Создай заново.');renderFriends();return;}
+      if(c2!==200){toast(me.error||'Ошибка');return;}
+      NET.code=me.code;NET.nick=me.nick;netSave();
+      $('frsub').textContent=me.nick+' · побед '+me.w+' / поражений '+me.l;
+      var tabs=[['daily','Сегодня'],['rank','Рейтинг'],['duels','Дуэли'],['list','Друзья']],th='<div class="chead"><b>Твой код друга: <span style="color:var(--gold);letter-spacing:3px;font-size:20px;-webkit-user-select:text;user-select:text">'+esc(me.code)+'</span></b><small>Отправь код другу — он введёт его у себя, и вы станете друзьями.</small></div><div class="tabs" id="frTabs">';
+      for(var i=0;i<tabs.length;i++)th+='<button data-t="'+tabs[i][0]+'" class="'+(tabs[i][0]===frTab?'on':'')+'">'+tabs[i][1]+'</button>';
+      th+='</div><div id="frcont"></div>';
+      frBox(th);
+      var bs=$('frTabs').getElementsByTagName('button');
+      for(i=0;i<bs.length;i++)bs[i].onclick=function(){frTab=this.getAttribute('data-t');renderFriends();};
+      frTabLoad();
+    });
+  });
+}
+function frTabLoad(){
+  var box=$('frcont');
+  if(frTab==='daily'){
+    var dk=Eng.dateKey();
+    api('GET','/api/daily?dk='+dk,null,function(c,j){
+      if(c!==200){box.innerHTML='<p style="color:var(--dim)">'+esc(j.error||'Ошибка')+'</p>';return;}
+      var h='<div class="gname">Ежедневная головоломка, '+esc(dk.split('-').reverse().join('.'))+' — лучший маршрут '+j.par+' ход.</div>';
+      if(!j.rows.length)h+='<p style="color:var(--dim)">Пока никто не решил. Будь первым!</p>';
+      for(var i=0;i<j.rows.length;i++){var r=j.rows[i];h+='<div class="row'+(r.me?'':'')+'"><div class="ic">'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1))+'</div><div class="mid"><b>'+esc(r.nick)+(r.me?' (ты)':'')+'</b><small>'+r.m+' ходов · '+'★★★'.slice(0,r.s)+' · в '+hhmm(r.at)+'</small></div></div>';}
+      h+='<button class="btn gold" id="frPlay">'+(dailyDone()?'Улучшить результат':'Играть сегодняшнюю')+'</button>';
+      box.innerHTML=h;$('frPlay').onclick=startDaily;
+    });
+  }else if(frTab==='rank'){
+    api('GET','/api/rank',null,function(c,j){
+      if(c!==200){box.innerHTML=esc(j.error||'Ошибка');return;}
+      var h='<div class="gname">Рейтинг: звёзды за подтверждённые сервером прохождения</div>';
+      for(var i=0;i<j.rank.length;i++){var r=j.rank[i];h+='<div class="row"><div class="ic">'+(i+1)+'</div><div class="mid"><b>'+esc(r.nick)+(r.me?' (ты)':'')+'</b><small>⭐ '+r.stars+' · уровней '+r.levels+' · дуэли '+r.w+'/'+r.l+'</small></div></div>';}
+      h+='<p style="color:var(--dim);font-size:12px">Прохождения уровней отправляются на сервер автоматически, когда игра открыта через него. Пройденное раньше можно перепройти — оно засчитается.</p>';
+      box.innerHTML=h;
+    });
+  }else if(frTab==='duels'){
+    api('GET','/api/duels',null,function(c,j){
+      if(c!==200){box.innerHTML=esc(j.error||'Ошибка');return;}
+      var h='<div class="gname">Дуэли: один уровень, у кого меньше ходов — тот победил. Попытка одна.</div>';
+      if(!j.duels.length)h+='<p style="color:var(--dim)">Дуэлей нет. Вызови друга во вкладке «Друзья».</p>';
+      for(var i=0;i<j.duels.length;i++){
+        var d=j.duels[i],t='',b='';
+        if(d.status==='your_turn'){t=(d.from==='opp'?esc(d.opp)+' вызвал тебя':'Твой вызов, ты ещё не играл')+(d.theirsPlayed?' · соперник уже сыграл':'');b='<button class="btn sm" data-d="'+i+'">Играть</button>';}
+        else if(d.status==='wait')t='Ты сыграл за '+d.mine+' · ждём '+esc(d.opp);
+        else t=(d.status==='won'?'🏆 Победа':d.status==='lost'?'Поражение':'Ничья')+': '+d.mine+' vs '+d.theirs;
+        h+='<div class="row"><div class="ic">⚔</div><div class="mid"><b>'+esc(d.opp)+' · уровень '+esc(d.level)+'</b><small>'+t+'</small></div>'+b+'</div>';
+      }
+      box.innerHTML=h;
+      var bb=box.getElementsByTagName('button');
+      for(var k=0;k<bb.length;k++)bb[k].onclick=function(){startDuel(j.duels[parseInt(this.getAttribute('data-d'),10)]);};
+    });
+  }else{
+    api('GET','/api/friends',null,function(c,j){
+      if(c!==200){box.innerHTML=esc(j.error||'Ошибка');return;}
+      var h='<div class="gname">Добавить друга по коду</div><input id="frCode" maxlength="6" placeholder="КОД из 6 символов" style="width:100%;padding:12px;border-radius:12px;border:1px solid #2c3d70;background:#0c1530;color:#fff;font-size:18px;letter-spacing:3px;text-transform:uppercase;-webkit-user-select:text;user-select:text"><button class="btn gold" id="frAdd">Добавить</button><div class="gname">Друзья ('+j.friends.length+'/50)</div>';
+      if(!j.friends.length)h+='<p style="color:var(--dim)">Пока никого.</p>';
+      for(var i=0;i<j.friends.length;i++){var f=j.friends[i];h+='<div class="row"><div class="ic">🙂</div><div class="mid"><b>'+esc(f.nick)+'</b><small>⭐ '+f.stars+' · уровней '+f.levels+'</small></div><button class="btn sm" data-d="'+i+'">⚔ Вызов</button></div>';}
+      box.innerHTML=h;
+      $('frAdd').onclick=function(){api('POST','/api/friend',{code:$('frCode').value},function(c2,j2){if(c2===200){toast('Друг добавлен: '+j2.nick);frTabLoad();}else toast(j2.error||'Ошибка');});};
+      var bb=box.getElementsByTagName('button');
+      for(var k=0;k<bb.length;k++)if(bb[k].getAttribute('data-d')!==null)bb[k].onclick=function(){
+        var f2=j.friends[parseInt(this.getAttribute('data-d'),10)];
+        var v=window.prompt('Номер уровня для дуэли с '+f2.nick+' (1–'+LEVELS.length+'; глава 1: 1–32, глава 2: 33–64):','5');
+        var n=parseInt(v,10);
+        if(!(n>=1&&n<=LEVELS.length))return;
+        api('POST','/api/duel',{to:f2.id,level:lvId(n-1)},function(c3,j3){if(c3===200){toast('Вызов отправлен. Сыграй свою попытку во вкладке «Дуэли».');frTab='duels';renderFriends();}else toast(j3.error||'Ошибка');});
+      };
+    });
+  }
+}
+function startDuel(d){
+  var idx=-1;for(var i=0;i<LEVELS.length;i++)if(lvId(i)===d.level)idx=i;
+  if(idx<0)return;
+  var lv=LEVELS[idx];
+  setupGame({mode:'duel',i:idx,duel:d.id,rows:lv.rows,par:lv.par,theme:CHAPTERS[lv.ch-1].theme,title:'Дуэль с '+d.opp,sub:'Уровень '+d.level+' · одна попытка, меньше ходов — победа',id:'duel-'+d.id,tip:''});
+}
+function submitWin(stars){
+  if(!NET||!NET.id||!G)return;
+  var body=null,mode=G.mode;
+  if(mode==='lvl')body={kind:'lvl',ref:G.id,moves:G.path.join('')};
+  else if(mode==='daily')body={kind:'daily',ref:G.dk,moves:G.path.join('')};
+  else if(mode==='duel')body={kind:'duel',ref:G.duel,moves:G.path.join('')};
+  if(!body)return;
+  api('POST','/api/solve',body,function(c,j){
+    if(mode!=='duel')return;
+    var t=c===200?(j.status==='won'?'🏆 Дуэль выиграна!':j.status==='lost'?'Дуэль проиграна: соперник '+j.theirs+' ходов':j.status==='draw'?'Ничья!':'Результат отправлен. Ждём соперника.'):(c===409?'Ты уже сыграл эту дуэль.':(j.error||'Нет связи, результат не отправлен'));
+    $('wExtra').innerHTML=esc(t);
+  });
+}
+// ---------- облачная копия сейва (опционально, нужен профиль друзей) ----------
+var cloudTry=0,cloudBusy=false,cloudAsked=false;
+function localScore(){return Store.score(S).score;}
+function maybeAutoCloud(st){
+  if(st.writing||!NET||!NET.id||cloudBusy)return;
+  var t=Date.now();
+  if(t-S.meta.lastCloud<300000||t-cloudTry<60000)return;
+  if(localScore()===S.meta.cloudScore)return;
+  cloudTry=t;cloudUp(false,false);
+}
+function cloudUp(manual,force){
+  if(!NET||!NET.id){if(manual)toast('Сначала создай профиль: «Друзья и дуэли»');return;}
+  cloudBusy=true;
+  var code=Store.exportCode(S,store.state().rev,Date.now());
+  api('POST','/api/backup',{blob:code,force:!!force},function(c,j){
+    cloudBusy=false;
+    if(c===200){S.meta.lastCloud=Date.now();S.meta.cloudScore=localScore();save();if(manual)toast('☁ Сохранено в облако: '+j.levels+' ур., ⭐'+j.stars);}
+    else if(c===409){
+      if(!manual)return;
+      var sv=j.server,me=Store.score(S);
+      if(window.confirm('В облаке прогресса больше: '+sv.levels+' ур., ⭐'+sv.stars+' (у тебя '+me.levels+' ур., ⭐'+me.stars+').\nОК — загрузить облачный прогресс (он объединится с твоим, ничего не пропадёт).\nОтмена — оставить как есть.'))cloudDown(true);
+      else if(window.confirm('Тогда перезаписать облачную копию твоим прогрессом?'))cloudUp(true,true);
+    }
+    else if(manual)toast(c===0?'Нет связи с сервером':(j.error||'Ошибка облака'));
+  });
+}
+function cloudDown(manual){
+  if(!NET||!NET.id){if(manual)toast('Сначала создай профиль: «Друзья и дуэли»');return;}
+  api('GET','/api/backup',null,function(c,j){
+    if(c===404){if(manual)toast('В облаке копии ещё нет');return;}
+    if(c!==200){if(manual)toast(c===0?'Нет связи с сервером':(j.error||'Ошибка'));return;}
+    var r=Store.parseCode(j.blob,Eng.Save.validate);
+    if(!r.ok){toast('Облачная копия повреждена: '+r.error,5000);return;}
+    var a=Store.score(r.data),b=Store.score(S);
+    if(!window.confirm('Облако: '+a.levels+' ур., ⭐'+a.stars+'. У тебя: '+b.levels+' ур., ⭐'+b.stars+'.\nОбъединить (берётся лучшее из обоих)?'))return;
+    S=Store.mergeSaves(r.data,S);G=null;store.flushNow('force');
+    toast('Прогресс объединён с облачным');if($('home').className.indexOf('on')>=0)refreshHome();
+  });
+}
+function cloudCheck(){
+  if(!NET||!NET.id||cloudAsked)return;
+  api('GET','/api/backup?meta=1',null,function(c,j){
+    if(c!==200||cloudAsked)return;
+    var sc=j.levels*10000+j.stars;
+    if(sc>localScore()){cloudAsked=true;if(window.confirm('В облаке найден прогресс больше (' +j.levels+' ур., ⭐'+j.stars+'). Загрузить и объединить с текущим?'))cloudDown(true);}
+  });
+}
+$('bCloudUp').onclick=function(){cloudUp(true,false);};
+$('bCloudDown').onclick=function(){cloudDown(true);};
+setTimeout(cloudCheck,1500);
+
+// тестовый крючок
+window.__game={S:function(){return S;},G:function(){return G;},open:function(i){openLevel(i);},move:doMove,show:show,win:onWin};
+fit();
+refreshHome();
+tick();
+})();
+
+</script>
+</body>
+</html>
