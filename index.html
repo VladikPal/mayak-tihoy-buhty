@@ -1530,6 +1530,18 @@ if(TG){
 // Статическая версия (GitHub Pages): сервера нет, дуэли и рейтинг выключены, остаётся приглашение друзей ссылкой на Mini App
 var STATIC_HOST=/\.github\.io$/.test(location.hostname)||/[?&]static=1(&|$)/.test(location.search);
 var APP_LINK='https://t.me/Vladikpalgamebot/mayak';
+// Адрес сервера статистики для версии на GitHub Pages: бот открывает игру с параметром ?api=<адрес туннеля trycloudflare>
+// (принимаем только такие адреса: в запросы уходит подписанный initData, чужому серверу его отдавать нельзя)
+var API_BASE='';
+(function(){
+  var re=/^(https:\/\/[a-z0-9-]{1,80}\.trycloudflare\.com|http:\/\/127\.0\.0\.1:\d{2,5})$/;
+  try{
+    var am=/[?&]api=([^&#]+)/.exec(location.search),av=am?decodeURIComponent(am[1]):'';
+    if(re.test(av)){API_BASE=av;try{localStorage.setItem('mayak_api',av);}catch(e){}}
+    else if(STATIC_HOST){var sv=localStorage.getItem('mayak_api')||'';if(re.test(sv))API_BASE=sv;}
+  }catch(e){}
+})();
+if(TG){try{$('bFriends').textContent='👥 Друзья и статистика';}catch(e){}}
 function netSave(){if(TG)return;try{localStorage.setItem('mayak_net',JSON.stringify(NET));}catch(e){}}
 function shareInvite(link){
   var url='https://t.me/share/url?url='+encodeURIComponent(link)+'&text='+encodeURIComponent('Играю в «Маяк Тихой Бухты» — сюжетный пазл прямо в Telegram. Заходи:');
@@ -1537,17 +1549,17 @@ function shareInvite(link){
   window.open(url,'_blank');
 }
 function api(method,path,body,cb){
-  if(STATIC_HOST||(location.protocol!=='http:'&&location.protocol!=='https:')){cb(0,{error:'offline'});return;}
+  if((STATIC_HOST&&!API_BASE)||(location.protocol!=='http:'&&location.protocol!=='https:')){cb(0,{error:'offline'});return;}
   var x=new XMLHttpRequest();
-  try{x.open(method,path,true);}catch(e){cb(0,{error:'offline'});return;}
-  x.timeout=7000;x.setRequestHeader('Content-Type','application/json');
+  try{x.open(method,API_BASE+path,true);}catch(e){cb(0,{error:'offline'});return;}
+  x.timeout=10000;x.setRequestHeader('Content-Type','application/json');
   if(TG)x.setRequestHeader('X-Init',TG.initData);
   else if(NET&&NET.id){x.setRequestHeader('X-Id',NET.id);x.setRequestHeader('X-Token',NET.token);}
   x.onload=function(){var j=null;try{j=JSON.parse(x.responseText);}catch(e){}cb(x.status,j||{error:'bad'});};
   x.onerror=function(){cb(0,{error:'offline'});};x.ontimeout=x.onerror;
   try{x.send(body?JSON.stringify(body):null);}catch(e){cb(0,{error:'offline'});}
 }
-var frTab='daily';
+var frTab=TG?'all':'daily';
 function hhmm(t){var d=new Date(t);return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
 function frBox(h){$('frbody').innerHTML=h;}
 function renderFriends(){
@@ -1555,8 +1567,9 @@ function renderFriends(){
   frBox('<div class="chead"><b>Проверяю связь…</b></div>');
   api('GET','/api/ping',null,function(c,j){
     if(c!==200&&TG&&STATIC_HOST){
-      frBox('<div class="chead"><b>Позови друзей</b><small>Дуэли и общий рейтинг пока выключены. Отправь друзьям ссылку на игру: они откроют её прямо в Telegram.</small></div><button class="btn gold" id="frInv">📨 Отправить друзьям</button>');
+      frBox('<div class="chead"><b>Статистика игроков недоступна</b><small>'+(API_BASE?'Сервер сейчас не отвечает (возможно, выключен компьютер). Игра работает как обычно.':'Сервер статистики не подключён. Игра работает как обычно.')+' Пока можно отправить друзьям ссылку на игру.</small></div><button class="btn gold" id="frInv">📨 Отправить друзьям</button><button class="btn sec" id="frRetry">Повторить</button>');
       $('frInv').onclick=function(){shareInvite(APP_LINK);};
+      $('frRetry').onclick=renderFriends;
       return;
     }
     if(c!==200){
@@ -1579,9 +1592,11 @@ function renderFriends(){
       if(c2!==200){toast(me.error||'Ошибка');return;}
       NET.code=me.code;NET.nick=me.nick;netSave();
       $('frsub').textContent=me.nick+' · побед '+me.w+' / поражений '+me.l;
-      var inv=(TG&&CFG&&CFG.bot&&me.inv)?'https://t.me/'+CFG.bot+'?start='+me.inv:null;
-      var tabs=[['daily','Сегодня'],['rank','Рейтинг'],['duels','Дуэли'],['list','Друзья']],th=(TG?
-        (inv?'<div class="chead"><b>Позови друзей из Telegram</b><small>Друг нажмёт на ссылку, запустит бота — и вы сразу друзья.</small></div><button class="btn gold" id="frInv">📨 Пригласить друга</button>':'<div class="chead"><b>Друзья в Telegram</b><small>Ссылка-приглашение появится, когда бот будет на связи.</small></div>'):
+      // приглашение: прямая ссылка на Mini App (работает без бота на ПК) или, на своём хосте, ссылка на бота
+      var inv=null;
+      if(TG&&me.inv){if(STATIC_HOST)inv=APP_LINK+'?startapp='+me.inv;else if(CFG&&CFG.bot)inv='https://t.me/'+CFG.bot+'?start='+me.inv;}
+      var tabs=TG?[['all','Все'],['daily','Сегодня'],['rank','Рейтинг'],['list','Друзья']]:[['daily','Сегодня'],['rank','Рейтинг'],['duels','Дуэли'],['list','Друзья']],th=(TG?
+        (inv?'<div class="chead"><b>Позови друзей из Telegram</b><small>Друг откроет игру по ссылке — и вы сразу друзья.</small></div><button class="btn gold" id="frInv">📨 Пригласить друга</button>':'<div class="chead"><b>Друзья в Telegram</b><small>Ссылка-приглашение появится, когда всё будет на связи.</small></div>'):
         '<div class="chead"><b>Твой код друга: <span style="color:var(--gold);letter-spacing:3px;font-size:20px;-webkit-user-select:text;user-select:text">'+esc(me.code)+'</span></b><small>Отправь код другу — он введёт его у себя, и вы станете друзьями.</small></div>')+'<div class="tabs" id="frTabs">';
       for(var i=0;i<tabs.length;i++)th+='<button data-t="'+tabs[i][0]+'" class="'+(tabs[i][0]===frTab?'on':'')+'">'+tabs[i][1]+'</button>';
       th+='</div><div id="frcont"></div>';
@@ -1604,6 +1619,26 @@ function frTabLoad(){
       for(var i=0;i<j.rows.length;i++){var r=j.rows[i];h+='<div class="row'+(r.me?'':'')+'"><div class="ic">'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1))+'</div><div class="mid"><b>'+esc(r.nick)+(r.me?' (ты)':'')+'</b><small>'+r.m+' ходов · '+'★★★'.slice(0,r.s)+' · в '+hhmm(r.at)+'</small></div></div>';}
       h+='<button class="btn gold" id="frPlay">'+(dailyDone()?'Улучшить результат':'Играть сегодняшнюю')+'</button>';
       box.innerHTML=h;$('frPlay').onclick=startDaily;
+    });
+  }else if(frTab==='all'){
+    // статистика всех игроков с сервера
+    api('GET','/api/stats',null,function(c,s){
+      if(c!==200){box.innerHTML='<p style="color:var(--dim)">'+esc(s.error||'Ошибка')+'</p>';return;}
+      api('GET','/api/players',null,function(c2,j){
+        if(c2!==200){box.innerHTML='<p style="color:var(--dim)">'+esc(j.error||'Ошибка')+'</p>';return;}
+        function tile(ic,t,sm){return '<div class="row"><div class="ic">'+ic+'</div><div class="mid"><b>'+t+'</b><small>'+sm+'</small></div></div>';}
+        var h='<div class="gname">Статистика всех игроков</div>'+
+          tile('👥','Игроков: '+s.players,'за сутки заходили: '+s.active24h+' · сейчас в игре: '+s.online)+
+          tile('⭐','Звёзд всего: '+s.stars,'пройдено уровней суммарно: '+s.levels+' · лучший игрок: '+s.bestLevels)+
+          tile('📅','Ежедневную сегодня решили: '+s.dailyToday,'заходи в «Сегодня» и добавься в список')+
+          '<div class="gname">Таблица лидеров</div>';
+        if(!j.players.length)h+='<p style="color:var(--dim)">Пока в таблице никого.</p>';
+        for(var i=0;i<j.players.length;i++){var r=j.players[i];
+          h+='<div class="row"><div class="ic">'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1))+'</div><div class="mid"><b>'+(r.online?'🟢 ':'')+esc(r.nick)+(r.me?' (ты)':'')+'</b><small>⭐ '+r.stars+' · уровней '+r.levels+'</small></div></div>';}
+        h+='<p style="color:var(--dim);font-size:12px">В таблице видны имя из Telegram, звёзды и пройденные уровни. Прогресс берётся из подтверждённых сервером прохождений и облачной копии игры.</p><button class="btn sec" id="frHide">'+(s.hidden?'Показать меня в таблице':'Скрыть меня из таблицы')+'</button>';
+        box.innerHTML=h;
+        $('frHide').onclick=function(){api('POST','/api/hide',{hide:!s.hidden},function(c3,j3){if(c3===200){toast(j3.hidden?'Тебя не видно в таблице':'Ты снова в таблице');frTabLoad();}else toast(j3.error||'Ошибка');});};
+      });
     });
   }else if(frTab==='rank'){
     api('GET','/api/rank',null,function(c,j){
@@ -1635,7 +1670,7 @@ function frTabLoad(){
       var INP='style="width:100%;padding:12px;border-radius:12px;border:1px solid #2c3d70;background:#0c1530;color:#fff;font-size:18px;-webkit-user-select:text;user-select:text"';
       var h=(TG?'':'<div class="gname">Добавить друга по коду</div><input id="frCode" maxlength="6" placeholder="КОД из 6 символов" style="width:100%;padding:12px;border-radius:12px;border:1px solid #2c3d70;background:#0c1530;color:#fff;font-size:18px;letter-spacing:3px;text-transform:uppercase;-webkit-user-select:text;user-select:text"><button class="btn gold" id="frAdd">Добавить</button>')+'<div class="gname">Друзья ('+j.friends.length+'/50)</div>';
       if(!j.friends.length)h+='<p style="color:var(--dim)">Пока никого.'+(TG?' Нажми «Пригласить друга» сверху.':'')+'</p>';
-      for(var i=0;i<j.friends.length;i++){var f=j.friends[i];h+='<div class="row"><div class="ic">🙂</div><div class="mid"><b>'+esc(f.nick)+'</b><small>⭐ '+f.stars+' · уровней '+f.levels+'</small></div><button class="btn sm" data-d="'+i+'">⚔ Вызов</button></div>';}
+      for(var i=0;i<j.friends.length;i++){var f=j.friends[i];h+='<div class="row"><div class="ic">🙂</div><div class="mid"><b>'+esc(f.nick)+'</b><small>⭐ '+f.stars+' · уровней '+f.levels+'</small></div>'+(TG?'':'<button class="btn sm" data-d="'+i+'">⚔ Вызов</button>')+'</div>';}
       box.innerHTML=h;
       if($('frAdd'))$('frAdd').onclick=function(){api('POST','/api/friend',{code:$('frCode').value},function(c2,j2){if(c2===200){toast('Друг добавлен: '+j2.nick);frTabLoad();}else toast(j2.error||'Ошибка');});};
       // выбор уровня для дуэли прямо на странице (window.prompt в Telegram работает не везде)
